@@ -53,7 +53,7 @@ p_table@empResults[-1,]
 plot(p_table, type = "p")
 plot(p_table, type = "d")
 
-p_table@pTable
+str(p_table@pTable)
 
 
 
@@ -124,6 +124,10 @@ p_emp[order(p_diff, decreasing = TRUE),]
 p_emp[, quantile(p_diff, seq(0,1,0.1))]
 
 
+ggplot(p_emp) +
+  geom_line(aes(x = v, y = p), color = "darkred") +
+  geom_line(aes(x = v, y = p_emp), color = "steelblue")
+
 # 3- Pertubation = Calcul la valeur finale -----------------------------------
 
 tableau_complet <- tableau_complet %>% 
@@ -138,9 +142,4 @@ str(tableau_complet)
 
 
 MAE <- mean(abs(tableau_complet$nb_obs - tableau_complet$nb_obs_pert))
-
-
-
-
-
 
