@@ -1,16 +1,16 @@
 # Installation des packages -------------------------------------------
 
-install.packages("remotes")
-remotes::install_github(
-  "InseeFrLab/rtauargus",
-  build_vignettes = FALSE,
-  upgrade = "never"
-)
-
-install.packages("ptable")
-install.packages("cellKey")
-install.packages("FactoMineR")
-install.packages("factoextra")
+# install.packages("remotes")
+# remotes::install_github(
+#   "InseeFrLab/rtauargus",
+#   build_vignettes = FALSE,
+#   upgrade = "never"
+# )
+# 
+# install.packages("ptable")
+# install.packages("cellKey")
+# install.packages("FactoMineR")
+# install.packages("factoextra")
 
 # Chargement des packages --------------------------------------------
 library(dplyr)
@@ -21,6 +21,7 @@ library(cellKey)
 library(rtauargus)
 library(FactoMineR)
 library(factoextra)
+library(cluster)
 
 
 
@@ -142,14 +143,20 @@ tableau_complet <- tableau_complet %>%
 str(tableau_complet)
 
 #Selection des varaibles
+# 
+# tableau_original<-tableau_complet%>%select(AGE,REGION,nb_obs)
+# tableau_pert<-tableau_complet%>%select(AGE,REGION,nb_obs_pert)
 
-tableau_original<-tableau_complet%>%select(AGE,REGION,nb_obs)
-tableau_pert<-tableau_complet%>%select(AGE,REGION,nb_obs_pert)
+tab_sans_marges <- tableau_complet %>% filter(REGION != "Total" & AGE != "Total" & SEX != "Total" & DIPL != "Total")
+
+table_contingence_orig  <- xtabs(nb_obs ~ REGION + AGE, data = tab_sans_marges)
+table_contingence_pert  <- xtabs(nb_obs_pert ~ REGION + AGE, data = tab_sans_marges)
+
 
 #Creation tableaux de contingences
-
-table_contingence_orig <- xtabs(nb_obs ~ REGION + AGE, data = tableau_original)
-table_contingence_pert <- xtabs(nb_obs_pert ~ REGION + AGE, data = tableau_pert)
+# 
+# table_contingence_orig <- xtabs(nb_obs ~ REGION + AGE, data = tableau_original)
+# table_contingence_pert <- xtabs(nb_obs_pert ~ REGION + AGE, data = tableau_pert)
 print(table_contingence_orig)
 print(table_contingence_pert)
 
@@ -223,6 +230,7 @@ head(inertia.row.pert[order(inertia.row.pert, decreasing = T)])
 
 #Visualisation
 
+# par(mfrow = c(1,2))
 plot.CA(afc_orig, axes = 1:2, invisible = c("row", "row.sup"))
 plot.CA(afc_pert, axes = 1:2, invisible = c("row", "row.sup"))
 
@@ -298,4 +306,41 @@ plot.CA(afc_pert, axes = 2:3, invisible = c("row.sup"),
 plot.CA(afc_orig, axes = 2:3, selectRow="cos2 0.9", cex = 0.8)
 
 plot.CA(afc_pert, axes = 2:3, selectRow="cos2 0.9", cex = 0.8)
+
+#Clustering
+# Calculer la distance entre les points des coordonnées de l'AFC
+dist_orig <- dist(afc_orig$row$coord)
+dist_pert <- dist(afc_pert$row$coord)
+
+coords_region <- afc_orig$row$coord[,c(1,2)] %>% as.data.frame() %>% 
+  rename(x = `Dim 1`, y = `Dim 2`) %>% 
+  mutate(REGION = rownames(afc_orig$row$coord), TYPE = "orig") %>% 
+  bind_rows(
+    afc_pert$row$coord[,c(1,2)] %>% as.data.frame() %>% 
+      rename(x = `Dim 1`, y = `Dim 2`) %>% 
+      mutate(REGION = rownames(afc_pert$row$coord), TYPE = "pert")
+  )
+  # mutate(dist_eucl = sqrt()) %>% 
+  # summarise(mean(dist_eucl))
+
+coords_region %>% 
+  ggplot() +
+  geom_point(aes(x=x, y=y, color = TYPE)) +
+  ggrepel::geom_text_repel(aes(x=x, y=y, color = TYPE, label = REGION))
+
+# Appliquer la CAH avec la méthode de Ward
+cah_orig <- hclust(dist_orig, method = "ward.D2")
+cah_pert <- hclust(dist_pert, method = "ward.D2")
+
+# Visualiser les dendrogrammes
+fviz_dend(cah_orig, k = 3, rect = TRUE, main = "Dendrogramme - Données Originales")
+fviz_dend(cah_pert, k = 3, rect = TRUE, main = "Dendrogramme - Données Perturbées")
+
+# Calculer la distance entre les points des coordonnées de l'AFC
+dist_orig <- dist(afc_orig$row$coord)
+dist_pert <- dist(afc_pert$row$coord)
+
+# Appliquer la CAH avec la méthode de Ward
+cah_orig <- hclust(dist_orig, method = "ward.D2")
+cah_pert <- hclust(dist_pert, method = "ward.D2")
 
