@@ -9,8 +9,8 @@
 # 
 # install.packages("ptable")
 # install.packages("cellKey")
-# install.packages("FactoMineR")
-# install.packages("factoextra")
+install.packages("FactoMineR")
+install.packages("factoextra")
 
 # Chargement des packages --------------------------------------------
 library(dplyr)
@@ -312,21 +312,86 @@ plot.CA(afc_pert, axes = 2:3, selectRow="cos2 0.9", cex = 0.8)
 dist_orig <- dist(afc_orig$row$coord)
 dist_pert <- dist(afc_pert$row$coord)
 
+distance_eucl_region <- afc_orig$row$coord[,c(1,2)] %>% as.data.frame() %>% 
+  rename(x_orig = `Dim 1`, y_orig = `Dim 2`) %>% 
+  mutate(REGION = rownames(afc_orig$row$coord)) %>% 
+  left_join(
+    afc_pert$row$coord[,c(1,2)] %>% as.data.frame() %>% 
+      rename(x_pert = `Dim 1`, y_pert = `Dim 2`) %>% 
+      mutate(REGION = rownames(afc_pert$row$coord)), by="REGION") %>%
+  mutate(dist_eucl=sqrt((x_orig - x_pert)^2 + (y_orig - y_pert)^2))%>%
+  summarise(mean(dist_eucl))
+
+distance_eucl_region
+
 coords_region <- afc_orig$row$coord[,c(1,2)] %>% as.data.frame() %>% 
   rename(x = `Dim 1`, y = `Dim 2`) %>% 
-  mutate(REGION = rownames(afc_orig$row$coord), TYPE = "orig") %>% 
+  mutate(REGION = rownames(afc_orig$row$coord), TYPE="orig") %>% 
   bind_rows(
     afc_pert$row$coord[,c(1,2)] %>% as.data.frame() %>% 
       rename(x = `Dim 1`, y = `Dim 2`) %>% 
-      mutate(REGION = rownames(afc_pert$row$coord), TYPE = "pert")
-  )
-  # mutate(dist_eucl = sqrt()) %>% 
-  # summarise(mean(dist_eucl))
+      mutate(REGION = rownames(afc_pert$row$coord),TYPE="pert"))
+
 
 coords_region %>% 
   ggplot() +
   geom_point(aes(x=x, y=y, color = TYPE)) +
-  ggrepel::geom_text_repel(aes(x=x, y=y, color = TYPE, label = REGION))
+  ggrepel::geom_text_repel(aes(x=x, y=y, color = TYPE, label = REGION))+
+  labs(
+    title = "Coordonnées des régions",
+    x = "Coordonnées des régions sur la Dim 1",
+    y = " Coordonées des régions sur la Dim 2",
+    color= "Type"
+  )+
+  theme_minimal()+
+  geom_hline(yintercept = 0, color = "black", linetype="dashed") +
+  geom_vline(xintercept = 0, color = "black",linetype="dashed")
+
+
+
+distance_eucl_age <- afc_orig$col$coord[,c(1,2)] %>% as.data.frame() %>% 
+  rename(x_orig = `Dim 1`, y_orig = `Dim 2`) %>% 
+  mutate(AGE = rownames(afc_orig$col$coord)) %>% 
+  left_join(
+    afc_pert$col$coord[,c(1,2)] %>% as.data.frame() %>% 
+      rename(x_pert = `Dim 1`, y_pert = `Dim 2`) %>% 
+      mutate(AGE = rownames(afc_pert$col$coord)), by="AGE") %>%
+  mutate(dist_eucl=sqrt((x_orig - x_pert)^2 + (y_orig - y_pert)^2))%>%
+  summarise(mean(dist_eucl))
+
+distance_eucl_age
+
+coords_age <- afc_orig$col$coord[,c(1,2)] %>% as.data.frame() %>% 
+  rename(x = `Dim 1`, y = `Dim 2`) %>% 
+  mutate(AGE = rownames(afc_orig$col$coord), TYPE="orig") %>% 
+  bind_rows(
+    afc_pert$col$coord[,c(1,2)] %>% as.data.frame() %>% 
+      rename(x = `Dim 1`, y = `Dim 2`) %>% 
+      mutate(AGE = rownames(afc_pert$col$coord),TYPE="pert"))
+
+
+coords_age %>% 
+  ggplot() +
+  geom_point(aes(x=x, y=y, color = TYPE)) +
+  ggrepel::geom_text_repel(aes(x=x, y=y, color = TYPE, label = AGE))+
+  labs(
+    title = "Coordonnées des ages",
+    x = "Coordonnées des ages sur la Dim 1",
+    y = " Coordonées des ages sur la Dim 2",
+    color= "Type"
+  )+
+  theme_minimal()+
+  geom_hline(yintercept = 0, color = "black", linetype="dashed") +
+  geom_vline(xintercept = 0, color = "black",linetype="dashed")
+
+
+# Inspecter les noms des colonnes pour afc_orig$col$coord
+colnames(afc_orig$col$coord)
+
+# Inspecter les noms des colonnes pour afc_pert$col$coord
+colnames(afc_pert$col$coord)
+
+
 
 # Appliquer la CAH avec la méthode de Ward
 cah_orig <- hclust(dist_orig, method = "ward.D2")
@@ -343,4 +408,6 @@ dist_pert <- dist(afc_pert$row$coord)
 # Appliquer la CAH avec la méthode de Ward
 cah_orig <- hclust(dist_orig, method = "ward.D2")
 cah_pert <- hclust(dist_pert, method = "ward.D2")
+
+
 
