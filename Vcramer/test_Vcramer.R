@@ -21,7 +21,7 @@ library(rtauargus)
 
 # Paramètres ------------------------------------------
 N = 100000 # Nombre d'individus dans la table
-D = 5 # Déviation de la CKM
+D = 10 # Déviation de la CKM
 V = 6.25 # Variance de la CKM
 
 seed = 40889 # graine aléatoire pour reproduire le jeu
@@ -109,7 +109,7 @@ appliquer_ckm <- function(seed) {
   vcramer_original <- Vcramer(original_tab)
   vcramer_perturbed <- Vcramer(perturbed_tab)
   
-  vcramer_diff <- abs(vcramer_original - vcramer_perturbed)
+  vcramer_diff <- (abs(vcramer_original - vcramer_perturbed)/vcramer_original)*100
   
   return(vcramer_diff)
 }
@@ -120,7 +120,7 @@ simulation_results <- replicate(100, appliquer_ckm(sample(1:100000, 1)))
 
 # Résultats
 summary(simulation_results)
-hist(simulation_results, breaks = 30, main = "Distribution des différences de V de Cramer", xlab = "Différence de V de Cramer")
+hist(simulation_results, breaks = 30, main = "Distribution des taux de variation du V de Cramer", xlab = " Taux de variation du V de Cramer (en %)")
 
 
 

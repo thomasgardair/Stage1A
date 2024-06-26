@@ -27,7 +27,7 @@ library(cluster)
 
 # Paramètres ------------------------------------------
 N = 100000 # Nombre d'individus dans la table
-D = 20 # Déviation de la CKM
+D = 10 # Déviation de la CKM
 V = 6.25 # Variance de la CKM
 
 seed = 40889 # graine aléatoire pour reproduire le jeu
@@ -151,8 +151,22 @@ tab_sans_marges <- tableau_complet %>% filter(REGION != "Total" & AGE != "Total"
 
 table_contingence_orig  <- xtabs(nb_obs ~ REGION + AGE, data = tab_sans_marges)
 table_contingence_pert  <- xtabs(nb_obs_pert ~ REGION + AGE, data = tab_sans_marges)
+Vcramer <- function(tab) {
+  if (!is.table(tab)) {
+    stop("L'argument doit être une table de contingence.")
+  }
+  chi2 <- chisq.test(tab)$statistic
+  n <- sum(tab)  
+  k <- min(dim(tab)) - 1
+  vcramer <- sqrt(chi2 / (n * k))
+  return(as.numeric(vcramer))
+}
 
+vcramer_original <- Vcramer(table_contingence_orig)
+vcramer_perturbed <- Vcramer(table_contingence_pert)
 
+vcramer_diff <- (abs(vcramer_original - vcramer_perturbed)/vcramer_original)*100
+vcramer_diff
 #Creation tableaux de contingences
 # 
 # table_contingence_orig <- xtabs(nb_obs ~ REGION + AGE, data = tableau_original)
@@ -338,16 +352,14 @@ coords_region %>%
   geom_point(aes(x=x, y=y, color = TYPE)) +
   ggrepel::geom_text_repel(aes(x=x, y=y, color = TYPE, label = REGION))+
   labs(
-    title = "Coordonnées des régions",
-    x = "Coordonnées des régions sur la Dim 1",
-    y = " Coordonées des régions sur la Dim 2",
+    title = "AFC - REGION",
+    x = "Dim 1",
+    y = "Dim 2",
     color= "Type"
   )+
   theme_minimal()+
   geom_hline(yintercept = 0, color = "black", linetype="dashed") +
   geom_vline(xintercept = 0, color = "black",linetype="dashed")
-
-
 
 distance_eucl_age <- afc_orig$col$coord[,c(1,2)] %>% as.data.frame() %>% 
   rename(x_orig = `Dim 1`, y_orig = `Dim 2`) %>% 
@@ -375,9 +387,9 @@ coords_age %>%
   geom_point(aes(x=x, y=y, color = TYPE)) +
   ggrepel::geom_text_repel(aes(x=x, y=y, color = TYPE, label = AGE))+
   labs(
-    title = "Coordonnées des ages",
-    x = "Coordonnées des ages sur la Dim 1",
-    y = " Coordonées des ages sur la Dim 2",
+    title = "AFC - AGE",
+    x = "Dim 1",
+    y = "Dim 2",
     color= "Type"
   )+
   theme_minimal()+
