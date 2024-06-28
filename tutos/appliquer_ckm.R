@@ -25,6 +25,7 @@ D = 5 # Déviation de la CKM
 V = 6.25 # Variance de la CKM
 
 seed = 40889 # graine aléatoire pour reproduire le jeu
+set.seed(seed)
 
 # 0-a Créer/Importer la table de données individuelles -------------------
 
@@ -40,7 +41,6 @@ str(micro_data)
 summary(micro_data)
 
 # 0-b Tirage des clés aléatoires individuelles -----------------------------
-set.seed(seed)
 micro_data$rkeys <- cellKey::ck_generate_rkeys(dat = micro_data, nr_digits = 5+log(N)/log(10))
 
 # On peut vérifier que la distribution empirique des clés suit une loi uniforme
