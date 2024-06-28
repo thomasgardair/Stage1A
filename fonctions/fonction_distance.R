@@ -24,7 +24,7 @@ seed=40889
 
 #Méthode d'arrondi aléatoire
 
-#Appliquer la méthodes à 1 tableau
+#Appliquer la méthode à 1 tableau
 
 appliquer_arrondi_aleatoire<- function(seed) {
   set.seed(seed)
@@ -36,9 +36,16 @@ appliquer_arrondi_aleatoire<- function(seed) {
     REGION = sample(1:13, N, replace = TRUE)
   )
   
+  micro_data <- micro_data %>%
+    mutate(DIPL = if_else(AGE < 20, "<BAC", DIPL))
+  
+  departments <- c("a", "b", "c", "d")
+  micro_data <- micro_data %>%
+    mutate(DEPT = paste(REGION, sample(departments, N, replace = TRUE), sep = "_"))
+  
   tableau_complet <- rtauargus::tabulate_micro_data(
     micro_data,
-    cat_vars = c("SEX", "DIPL", "AGE", "REGION"),
+    cat_vars = c("SEX", "DIPL", "AGE", "REGION","DEPT"),
     resp_var = NULL,
     marge_label = "Total"
   )
@@ -65,7 +72,7 @@ appliquer_arrondi_aleatoire<- function(seed) {
   return(tableau_complet)
 }
 
-#Appliquer la méthodes à 100 tableaux
+#Appliquer la méthode à 100 tableaux
 
 set.seed(123) 
 simuler_arrondi_aleatoire <- replicate(100, appliquer_arrondi_aleatoire(sample(1:100000, 1)), simplify = FALSE)
@@ -88,24 +95,33 @@ distance_arrondi_aleatoire %>%
 
 #Méthode CKM
 
-#Appliquer la méthodes à 1 tableau
+#Appliquer la méthode à 1 tableau
 
 appliquer_ckm <- function(seed) {
   set.seed(seed)
   
   micro_data <- tibble(
-    DIPL = sample(c("CAP", "BAC", "LIC", "MAST"), N, replace = TRUE, prob = c(0.1,0.5,0.3,0.1)),
+    SEX = sample(c("H","F"), N, replace = TRUE, prob = c(0.48,0.52)),
+    DIPL = sample(
+      c("CAP", "BAC", "LIC", "MAST"), N, replace = TRUE, prob = c(0.1,0.5,0.3,0.1)),
+    AGE = sample(seq(0,100,10), N, replace = TRUE),
     REGION = sample(1:13, N, replace = TRUE)
   )
+  micro_data <- micro_data %>%
+    mutate(DIPL = if_else(AGE < 20, "<BAC", DIPL))
+  
+  departments <- c("a", "b", "c", "d")
+  micro_data <- micro_data %>%
+    mutate(DEPT = paste(REGION, sample(departments, N, replace = TRUE), sep = "_"))
   
   micro_data$rkeys <- cellKey::ck_generate_rkeys(dat = micro_data, nr_digits = 5+log(N)/log(10))
   
   p_table <- ptable::create_cnt_ptable(D = D, V = V)
   
-  tableau_complet <- rtauargus::tabulate_micro_data( 
+  tableau_complet <- rtauargus::tabulate_micro_data( # fonction d'agrégation
     micro_data,
-    cat_vars = c("DIPL","REGION"),
-    resp_var = "rkeys", 
+    cat_vars = c("SEX", "DIPL", "AGE", "REGION", "DEPT"),
+    resp_var = "rkeys", #pour agréger les clés en même temps que de réaliser les comptages
     marge_label = "Total"
   )
   
@@ -140,7 +156,7 @@ appliquer_ckm <- function(seed) {
   return(tableau_complet)
 }
 
-#Appliquer la méthodes à 100 tableaux
+#Appliquer la méthode à 100 tableaux
 
 set.seed(123) 
 simuler_ckm <- replicate(100, appliquer_ckm(sample(1:100000, 1)), simplify = FALSE)
