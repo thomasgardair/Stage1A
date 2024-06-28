@@ -17,13 +17,16 @@ calcul_distance <- function(tableau_complet, n_obs, n_obs_pert) {
 #Paramètres fixes pour les deux méthodes
 
 N = 10000
+B=10
+D=10
+V=6.25
 seed=40889
 
 #Méthode d'arrondi aléatoire
 
 #Appliquer la méthodes à 1 tableau
 
-appliquer_arrondi_aleatoire<- function(B,seed) {
+appliquer_arrondi_aleatoire<- function(seed) {
   set.seed(seed)
   
   micro_data <- tibble(
@@ -65,7 +68,7 @@ appliquer_arrondi_aleatoire<- function(B,seed) {
 #Appliquer la méthodes à 100 tableaux
 
 set.seed(123) 
-simuler_arrondi_aleatoire <- replicate(100, appliquer_arrondi_aleatoire(10,sample(1:100000, 1)), simplify = FALSE)
+simuler_arrondi_aleatoire <- replicate(100, appliquer_arrondi_aleatoire(sample(1:100000, 1)), simplify = FALSE)
 
 #Calcul des distances pour chaque tableau
 
@@ -87,7 +90,7 @@ distance_arrondi_aleatoire %>%
 
 #Appliquer la méthodes à 1 tableau
 
-appliquer_ckm <- function(D,V,seed) {
+appliquer_ckm <- function(seed) {
   set.seed(seed)
   
   micro_data <- tibble(
@@ -140,7 +143,7 @@ appliquer_ckm <- function(D,V,seed) {
 #Appliquer la méthodes à 100 tableaux
 
 set.seed(123) 
-simuler_ckm <- replicate(100, appliquer_ckm(10,6.25,sample(1:100000, 1)), simplify = FALSE)
+simuler_ckm <- replicate(100, appliquer_ckm(sample(1:100000, 1)), simplify = FALSE)
 
 #Calcul des distances pour chaque tableau
 
