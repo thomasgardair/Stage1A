@@ -1,10 +1,6 @@
 #Fonction pour calculer les distances entre les valeurs originales et perturbées
 
 calcul_distance <- function(tableau_complet, n_obs, n_obs_pert) {
-  if(!(n_obs %in% colnames(tableau_complet)) | !(n_obs_pert %in% colnames(tableau_complet))) {
-    stop("Les colonnes  n'existent pas dans le tableau")
-  }
-  
   obs <- tableau_complet[[n_obs]]
   obs_pert <- tableau_complet[[n_obs_pert]]
   
@@ -16,7 +12,7 @@ calcul_distance <- function(tableau_complet, n_obs, n_obs_pert) {
 
 #Paramètres fixes pour les deux méthodes
 
-N = 10000
+N =10000
 B=10
 D=10
 V=6.25
