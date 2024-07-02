@@ -21,7 +21,7 @@ library(rtauargus)
 
 # Paramètres ------------------------------------------
 N = 100000 # Nombre d'individus dans la table
-D = 5 # Déviation de la CKM
+D = 10 # Déviation de la CKM
 V = 6.25 # Variance de la CKM
 
 seed = 40889 # graine aléatoire pour reproduire le jeu
