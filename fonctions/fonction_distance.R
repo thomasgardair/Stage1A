@@ -4,10 +4,15 @@ calcul_distance <- function(tableau_complet, n_obs, n_obs_pert) {
   obs <- tableau_complet[[n_obs]]
   obs_pert <- tableau_complet[[n_obs_pert]]
   
-  MAE <- mean(abs(obs - obs_pert))
-  HD <- mean(sqrt((1/2) * (sqrt(obs) - sqrt(obs_pert))^2))
+  AAD <- mean(abs(obs - obs_pert))
+  # L'AAD est plus intuitif et décrit la différence absolue moyenne par cellule non nulle d'une OA.
   
-  return(list(MAE = MAE, HD = HD))
+  HD <- mean(sqrt((1/2) * (sqrt(obs) - sqrt(obs_pert))^2))
+  #La distance HD est basée sur la théorie de l'information. Il est fortement influencé par les petites cellules.
+  
+  RAD <- mean(abs(obs - obs_pert)/obs)
+  
+  return(list(AAD = AAD, HD = HD, RAD = RAD))
 }  
 
 #Paramètres fixes pour les deux méthodes
@@ -79,15 +84,16 @@ distance_arrondi_aleatoire <- bind_rows(lapply(seq_along(simuler_arrondi_aleatoi
   tableau <- simuler_arrondi_aleatoire[[i]]
   res <- calcul_distance(tableau, "nb_obs", "nb_obs_alea")
   data.frame(
-    MAE = res$MAE,
-    HD = res$HD
+    AAD = res$AAD,
+    HD = res$HD,
+    RAD = res$RAD
   )
 }))
 
 #Moyenne des distances
 
 distance_arrondi_aleatoire %>%
-  summarize(mean(MAE),mean(HD))
+  summarize(mean(AAD),mean(HD), mean(RAD))
 
 #Méthode CKM
 
@@ -163,12 +169,13 @@ distance_ckm <- bind_rows(lapply(seq_along(simuler_ckm), function(i) {
   tableau <- simuler_ckm[[i]]
   res <- calcul_distance(tableau, "nb_obs", "nb_obs_pert")
   data.frame(
-    MAE = res$MAE,
-    HD = res$HD
+    AAD = res$AAD,
+    HD = res$HD,
+    RAD = res$RAD
   )
 }))
 
 #Moyenne des distances
 
 distance_ckm %>%
-  summarize(mean(MAE),mean(HD))
+  summarize(mean(AAD),mean(HD), mean(RAD))
