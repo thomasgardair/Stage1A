@@ -1,3 +1,5 @@
+rm(list = ls())
+
 tab_sans_marges <- tableau_complet %>% filter(REGION != "Total" & AGE != "Total" & SEX != "Total" & DIPL != "Total")
 
 columns <- colnames(tab_sans_marges)
@@ -36,8 +38,8 @@ sous_tableau <- function(tableau_complet) {
     table_obs <- xtabs(formula_obs, data = tab_sans_marges)
     table_obs_pert <- xtabs(formula_obs_pert, data = tab_sans_marges)
     
-    table_orig <- paste(paste(vars, collapse = "_x_"), "orig", sep = "_")
-    table_pert <- paste(paste(vars, collapse = "_x_"), "pert", sep = "_")
+    table_orig <- paste(paste(vars, collapse = "_"), "orig", sep = "_")
+    table_pert <- paste(paste(vars, collapse = "_"), "pert", sep = "_")
     
     assign(table_orig, table_obs, envir = .GlobalEnv)
     assign(table_pert, table_obs_pert, envir = .GlobalEnv)
