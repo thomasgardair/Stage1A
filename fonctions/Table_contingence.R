@@ -21,6 +21,7 @@ for (vars in combinaisons) {
   assign(table_orig, table_obs, envir = .GlobalEnv)
   assign(table_pert, table_obs_pert, envir = .GlobalEnv)
 }
+#Calcul tout les sous tableaux possible a partir du tableau complet 
 
 sous_tableau <- function(tableau_complet) {
   tab_sans_marges <- tableau_complet %>% 
@@ -46,3 +47,19 @@ sous_tableau <- function(tableau_complet) {
   
   }
 }
+
+#Calcul les distances pour tout les tableaux de contingences 
+
+calcul_distance <- function(table_orig, table_pert) {
+  obs <- as.vector(table_orig)
+  obs_pert <- as.vector(table_pert)
+  
+  AAD <- mean(abs(obs - obs_pert))
+  
+  HD <- mean(sqrt((1/2) * (sqrt(obs) - sqrt(obs_pert))^2))
+  
+  RAD <- mean(abs(obs - obs_pert) / obs)
+  
+  return(list(AAD = AAD, HD = HD, RAD = RAD))
+}
+
