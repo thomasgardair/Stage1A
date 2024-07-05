@@ -17,7 +17,7 @@ library(rtauargus)
 
 # Paramètres ------------------------------------------
 B = 10 # base de l'arrondi
-N = 10000 # nb individus
+N = 100000 # nb individus
 seed = 40889 # graine aléatoire pour reproduire le jeu
 set.seed(seed)
 
@@ -70,7 +70,7 @@ tableau_complet <- tableau_complet %>%
 tableau_complet <- tableau_complet %>% 
   # 2-c tirage de la valeur perturbée
   mutate(
-    nb_obs_alea = apply(
+    nb_obs_pert = apply(
       tableau_complet %>% select(p_inf, p_sup, val_inf, val_sup),
       MARGIN = 1,
       FUN = \(r) sample(
