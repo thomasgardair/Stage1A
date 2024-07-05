@@ -11,17 +11,24 @@ Vcramer <- function(tab) {
 
 tab_sans_marges <- tableau_complet %>% filter(REGION != "Total" & AGE != "Total" & SEX != "Total" & DIPL != "Total")
 
-original_tab <- xtabs(nb_obs ~ REGION + AGE, data = tab_sans_marges)
-perturbed_tab <- xtabs(nb_obs_pert ~ REGION + AGE, data = tab_sans_marges)
+table_orig <- xtabs(nb_obs ~ REGION + AGE, data = tab_sans_marges)
+table_orig <- xtabs(nb_obs_pert ~ REGION + AGE, data = tab_sans_marges)
 
 
-Taux_Variation_Vcramer <- function(original_tab, perturbed_tab) {
+Taux_Variation_Vcramer <- function(table_orig, table_pert) {
 
-  vcramer_original <- Vcramer(original_tab)
-  vcramer_perturbed <- Vcramer(perturbed_tab)
+  test_orig <- chisq.test(table_orig)
+  test_pert <- chisq.test(table_pert)
   
-  vcramer_diff <- (abs(vcramer_original - vcramer_perturbed)/vcramer_original)*100
+  vcramer_diff <- "L'indépendance n'est pas rejetée pour l'un ou les deux tableaux."
   
-  return(vcramer_diff)
+  if (test1$p.value < 0.05 && test2$p.value < 0.05) {
+    vcramer_original <- Vcramer(table_pert)
+    vcramer_perturbed <- Vcramer(table_pert)
+    
+    vcramer_diff <- (abs(vcramer_original - vcramer_perturbed)/vcramer_original)*100
+  }
+  
+  return(list(test_orig = test_orig, test_pert = test_pert, vcramer_diff = vcramer_diff))
 }
 
