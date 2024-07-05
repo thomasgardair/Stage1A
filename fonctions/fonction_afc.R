@@ -123,10 +123,7 @@ afc <- function(table_contingence_orig, table_contingence_pert){
     geom_hline(yintercept = 0, color = "black", linetype="dashed") +
     geom_vline(xintercept = 0, color = "black",linetype="dashed")
   
-  print(plot_row)
-  print(plot_col)
-  print(chisq.test(table_contingence_orig))
-  print(chisq.test(table_contingence_pert))
+  return(list(plot_row = plot_row, plot_col = plot_col, test_orig = test_orig, test_pert = test_pert))
 }
 
 

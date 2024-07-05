@@ -36,6 +36,12 @@ micro_data <- tibble(
   AGE = sample(seq(0,100,10), N, replace = TRUE),
   REGION = sample(1:13, N, replace = TRUE)
 )
+micro_data <- micro_data %>%
+  mutate(DIPL = if_else(AGE < 20, "<BAC", DIPL))
+
+departments <- c("a", "b", "c", "d")
+micro_data <- micro_data %>%
+  mutate(DEPT = paste(REGION, sample(departments, N, replace = TRUE), sep = "_"))
 
 str(micro_data)
 summary(micro_data)
@@ -63,7 +69,7 @@ str(p_table@pTable)
 # Ainsi on pourra considérer des sous-tableaux selon les analyses qu'on veut faire
 tableau_complet <- rtauargus::tabulate_micro_data( # fonction d'agrégation
   micro_data,
-  cat_vars = c("SEX", "DIPL", "AGE", "REGION"),
+  cat_vars = c("SEX", "DIPL", "AGE", "REGION","DEPT"),
   resp_var = "rkeys", #pour agréger les clés en même temps que de réaliser les comptages
   marge_label = "Total"
 )
