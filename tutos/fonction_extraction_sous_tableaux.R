@@ -78,7 +78,7 @@ recuperer_ts_sous_tableaux <- function(tableau, vars_cat, vars_num = "nb_obs", m
               filter(.data[[v]] == mod_total) %>% 
               select(-all_of(v))
           }
-          return(extract) 
+          return(extract %>% select(all_of(c(combinaison, vars_num)))) 
         }
       )
     names(liste_sous_tab_contingence[[l]]) <- purrr::map(
