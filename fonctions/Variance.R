@@ -8,8 +8,8 @@ VR <- function(tableau_complet, n_obs,n_obs_pert){
 }
 
 VR_contingence <- function(table_orig, table_pert) {
-  obs <- as.vector(tableau_obs)
-  obs_pert <- as.vector(tableau_obs_pert)
+  obs <- as.vector(table_orig)
+  obs_pert <- as.vector(table_pert)
   
   V_orig <- mean((obs -(mean(obs)))^2 )
   V_pert <- mean((obs_pert - (mean(obs)))^2)
