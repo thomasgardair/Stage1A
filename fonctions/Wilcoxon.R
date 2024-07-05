@@ -7,5 +7,5 @@ wilcoxon_test <- function(tableau_complet, nb_obs, nb_obs_pert, paired = FALSE) 
   
   return(test)
 }
-wilcoxon_test(tableau_complet, "nb_obs", "nb_obs_alea", paired = TRUE)
+wilcoxon_test(tableau_complet, "nb_obs", "nb_obs_pert", paired = TRUE)
 

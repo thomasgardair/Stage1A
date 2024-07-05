@@ -22,7 +22,7 @@ Taux_Variation_Vcramer <- function(table_orig, table_pert) {
   
   vcramer_diff <- "L'indépendance n'est pas rejetée pour l'un ou les deux tableaux."
   
-  if (test1$p.value < 0.05 && test2$p.value < 0.05) {
+  if (test_orig$p.value < 0.05 && test_pert$p.value < 0.05) {
     vcramer_original <- Vcramer(table_pert)
     vcramer_perturbed <- Vcramer(table_pert)
     

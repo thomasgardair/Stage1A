@@ -127,27 +127,6 @@ afc <- function(table_contingence_orig, table_contingence_pert){
 }
 
 
-tab_sans_marges <- tableau_complet %>% filter(REGION != "Total" & AGE != "Total" & SEX != "Total" & DIPL != "Total")
-
-table_contingence_orig  <- xtabs(nb_obs ~ REGION + AGE, data = tab_sans_marges)#ok
-table_contingence_pert  <- xtabs(nb_obs_pert ~ REGION + AGE, data = tab_sans_marges)
-
-table_contingence_orig  <- xtabs(nb_obs ~ REGION + SEX, data = tab_sans_marges)#pb
-table_contingence_pert  <- xtabs(nb_obs_pert ~ REGION + SEX, data = tab_sans_marges)
-
-table_contingence_orig  <- xtabs(nb_obs ~ REGION + DIPL, data = tab_sans_marges)#ok
-table_contingence_pert  <- xtabs(nb_obs_pert ~ REGION + DIPL, data = tab_sans_marges)
-
-table_contingence_orig  <- xtabs(nb_obs ~ AGE + SEX, data = tab_sans_marges)#pb
-table_contingence_pert  <- xtabs(nb_obs_pert ~ AGE + SEX, data = tab_sans_marges)
-
-table_contingence_orig  <- xtabs(nb_obs ~ AGE + DIPL, data = tab_sans_marges)#ok
-table_contingence_pert  <- xtabs(nb_obs_pert ~ AGE + DIPL, data = tab_sans_marges)
-
-table_contingence_orig  <- xtabs(nb_obs ~ DIPL + SEX, data = tab_sans_marges)#pb
-table_contingence_pert  <- xtabs(nb_obs_pert ~ DIPL + SEX, data = tab_sans_marges)
-
-
 
 
 
