@@ -70,7 +70,7 @@ tableau_complet <- tableau_complet %>%
 tableau_complet <- tableau_complet %>% 
   # 2-c tirage de la valeur perturbée
   mutate(
-    nb_obs_pert = apply(
+    nb_obs_alea = apply(
       tableau_complet %>% select(p_inf, p_sup, val_inf, val_sup),
       MARGIN = 1,
       FUN = \(r) sample(
