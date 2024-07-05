@@ -5,7 +5,7 @@ tab_sans_marges <- tableau_complet %>% filter(REGION != "Total" & AGE != "Total"
 columns <- colnames(tab_sans_marges)
 columns <- columns[grepl("^[A-Z_]+$", columns)]
 
-combinaisons <- combn(columns_upper, 2, simplify = FALSE)
+combinaisons <- combn(columns, 2, simplify = FALSE)
 
 for (vars in combinaisons) {
   formula_obs <- as.formula(paste("nb_obs ~", paste(vars, collapse = " + ")))
