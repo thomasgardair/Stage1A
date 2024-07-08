@@ -9,3 +9,4 @@ remotes::install_github(
 
 install.packages("ptable")
 install.packages("cellKey")
+install.packages("MASS")

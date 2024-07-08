@@ -1,12 +1,26 @@
 #' Title
 #'
-#' @param table_contingence_orig 
-#' @param table_contingence_pert 
+#' @param table_contingence_orig tableau contingence avec données originales
+#' @param table_contingence_pert tableau contingence avec données perturbées
 #'
-#' @return
+#' @return liste avec afc et test khi-deux 
 #' @export
 #'
 #' @examples
+#' #' library(dplyr)
+#' tableau_complet <- generer_tableau(100)
+#' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
+#' liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
+#'   tableau = tab_avec_AL,
+#'   vars_cat = c("SEX","AGE","DIPL","REGION")
+#' )
+#' liste_sous_tableau_pert <- recuperer_ts_sous_tableaux(
+#' tableau = tab_avec_AL,
+#' vars_cat = c("SEX","AGE","DIPL","REGION"),
+#' vars_num = "nb_obs_alea", mod_total = "Total"
+#' )
+#' 
+#' afc(liste_sous_tableaux_orig$tabs_2Vars$SEX_DIPL,liste_sous_tableaux_pert$tabs_2Var$SEX_DIPL)
 afc <- function(table_contingence_orig, table_contingence_pert){
   
   afc_orig <- CA(table_contingence_orig, graph = FALSE)

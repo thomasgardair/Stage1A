@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' #' library(dplyr)
+#' library(dplyr)
 #' tableau_complet <- generer_tableau(100)
 #' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
 #' calcul_distance(tab_avec_AL, "nb_obs", "nb_obs_alea")

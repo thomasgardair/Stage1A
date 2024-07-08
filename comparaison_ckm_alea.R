@@ -6,7 +6,8 @@ library(ggplot2)
 library(ptable)
 library(cellKey)
 library(rtauargus)
-
+library(purrr)
+library(MASS)
 
 
 #Paramètres fixes pour les deux méthodes
@@ -21,7 +22,14 @@ source("fonctions/fonction_arrondi_aleatoire.R")
 source("fonctions/fonction_distance.R")
 source("fonctions/fonction_ckm.R")
 source("fonctions/fonction_generer_tableau.R")
-
+source("fonctions/Wilcoxon.R")
+source("fonctions/Spearman.R")
+source("fonctions/Variance.R")
+source("fonctions/Frequences marginales.R")
+source("fonctions/fonction_afc.R")
+source("fonctions/fonction_extraction.R")
+source("fonctions/Log-lin.R")
+source("fonctions/Vcramer.R")
 
 set.seed(40889)
 # 1- Générer les micro
@@ -42,6 +50,21 @@ str(tableau_perturbe)
 # 4- Distance
 calcul_distance(tableau_perturbe, "nb_obs", "nb_obs_ckm")
 calcul_distance(tableau_perturbe, "nb_obs", "nb_obs_alea")
+
+# 5- Test Spearman
+spearman_test(tableau_perturbe,"nb_obs","nb_obs_alea")
+spearman_test(tableau_perturbe,"nb_obs","nb_obs_ckm")
+
+#6- Test Wilcoxon
+wilcoxon_test(tableau_perturbe, "nb_obs","nb_obs_alea")
+wilcoxon_test(tableau_perturbe, "nb_obs","nb_obs_ckm")
+
+
+#7- Variance
+VR(tableau_perturbe,"nb_obs","nb_obs_alea")
+VR(tableau_perturbe,"nb_obs","nb_obs_ckm")
+
+
 
 set.seed(123) 
 simuler_arrondi_aleatoire <- replicate(100, appliquer_arrondi_aleatoire(sample(1:100000, 1)), simplify = FALSE)
