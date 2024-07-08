@@ -9,8 +9,11 @@
 #' @export
 #'
 #' @examples
+#' library(dplyr)
+#' tableau_complet <- generer_tableau(100)
+#' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
 #' liste_sous_tableaux <- recuperer_ts_sous_tableaux(
-#'   tableau = tableau_perturbe,
+#'   tableau = tab_avec_AL,
 #'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
 #' )
 #' str(liste_sous_tableaux)
