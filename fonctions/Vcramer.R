@@ -9,12 +9,6 @@ Vcramer <- function(tab) {
   return(as.numeric(vcramer))
 }
 
-tab_sans_marges <- tableau_complet %>% filter(REGION != "Total" & AGE != "Total" & SEX != "Total" & DIPL != "Total")
-
-table_orig <- xtabs(nb_obs ~ REGION + AGE, data = tab_sans_marges)
-table_orig <- xtabs(nb_obs_pert ~ REGION + AGE, data = tab_sans_marges)
-
-
 Taux_Variation_Vcramer <- function(table_orig, table_pert) {
 
   test_orig <- chisq.test(table_orig)

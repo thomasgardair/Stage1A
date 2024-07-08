@@ -2,11 +2,11 @@
 
 #' Title
 #'
-#' @param tableau_complet 
-#' @param n_obs 
-#' @param n_obs_pert 
+#' @param tableau_complet  tableau de données complet sous forme de dtaframe/datatable
+#' @param n_obs nb d'observation originale
+#' @param n_obs_pert nb d'observation perturbé
 #'
-#' @return
+#' @return list avec le calcul des distances
 #' @export
 #'
 #' @examples

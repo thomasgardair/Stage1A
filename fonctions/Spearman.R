@@ -1,6 +1,21 @@
 #Fonction pour calculer les tests entre les valeurs originales et perturbées
 
+#' Title
+#'
+#' @param tableau_complet tableau de données complet sous forme de dtaframe/datatable
+#' @param nb_obs nom colonne obs originales
+#' @param nb_obs_pert nom colonne obs perturbées
+#'
+#' @return test de spearman entre données originales et perturbés
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' tableau_complet <- generer_tableau(100)
+#' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
+#' spearman_test(tab_avec_AL, "nb_obs", "nb_obs_alea")
 spearman_test <- function(tableau_complet, nb_obs, nb_obs_pert) {
+  
   
   obs <- tableau_complet[[nb_obs]]
   obs_pert <- tableau_complet[[nb_obs_pert]]
@@ -9,37 +24,10 @@ spearman_test <- function(tableau_complet, nb_obs, nb_obs_pert) {
   
   return(test)
 }
-#Calcul des tests pour chaque tableau
 
-Spearman_arrondi_aleatoire <- bind_rows(lapply(seq_along(simuler_arrondi_aleatoire), function(i) {
-  tableau <- simuler_arrondi_aleatoire[[i]]
-  res <- spearman_test(tableau, "nb_obs", "nb_obs_alea")
-  data.frame(
-    S = res$statistic,
-    rho = res$estimate,
-    p_value = res$p.value
-  )
-}))
 
-#Moyenne des stats
 
-Spearman_arrondi_aleatoire %>%
-  summarize(mean(S),mean(rho),mean(p_value))
 
-#Calcul des tests pour chaque tableau
 
-Spearman_ckm <- bind_rows(lapply(seq_along(simuler_ckm), function(i) {
-  tableau <- simuler_ckm[[i]]
-  res <- spearman_test(tableau, "nb_obs", "nb_obs_pert")
-  data.frame(
-    S = res$statistic,
-    rho = res$estimate,
-    p_value = res$p.value
-  )
-}))
 
-#Moyenne des stats
-
-Spearman_ckm %>%
-  summarize(mean(S),mean(rho),mean(p_value))
 

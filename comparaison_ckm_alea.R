@@ -90,3 +90,20 @@ distance_ckm <- bind_rows(lapply(seq_along(simuler_ckm), function(i) {
 
 distance_ckm %>%
   summarize(mean(AAD),mean(HD), mean(RAD))
+
+#Calcul des tests pour chaque tableau
+
+Spearman_arrondi_aleatoire <- bind_rows(lapply(seq_along(simuler_arrondi_aleatoire), function(i) {
+  tableau <- simuler_arrondi_aleatoire[[i]]
+  res <- spearman_test(tableau, "nb_obs", "nb_obs_alea")
+  data.frame(
+    S = res$statistic,
+    rho = res$estimate,
+    p_value = res$p.value
+  )
+}))
+
+#Moyenne des stats
+
+Spearman_arrondi_aleatoire %>%
+  summarize(mean(S),mean(rho),mean(p_value))
