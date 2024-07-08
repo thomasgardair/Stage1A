@@ -11,7 +11,7 @@
 #' @examples
 #' liste_sous_tableaux <- recuperer_ts_sous_tableaux(
 #'   tableau = tableau_perturbe,
-#'   vars_cat = c("SEX","AGE","DIPL","REGION")
+#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
 #' )
 #' str(liste_sous_tableaux)
 #' # Exemple pour récupérer le tableau SEX * DIPL
