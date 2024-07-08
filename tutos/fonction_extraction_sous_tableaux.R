@@ -72,7 +72,7 @@ recuperer_ts_sous_tableaux <- function(tableau, vars_cat, vars_num = "nb_obs", m
         \(i){
           combinaison = comb_vars[,i]
           nocomb = vars_cat[ ! vars_cat %in% combinaison]
-          extract <- tableau_complet 
+          extract <- tableau
           for(v in nocomb){
             extract <- extract %>% 
               filter(.data[[v]] == mod_total) %>% 
