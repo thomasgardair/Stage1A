@@ -100,14 +100,3 @@ RV(tab_orig,tab_pert,~DIPL + REGION )
 #pessayer de generaliser les focntions a tout lkes osus tableuax ern faisaint des boucles par exemploe et en particulier pour tout les sous tableauc de contingences 
 
 
-resultats <- purrr::map2(liste_sous_tableaux_orig, names(liste_sous_tableaux_orig), function(sous_tables, tab_name) {
-  purrr::map2(sous_tables, names(sous_tables), function(sous_table, sous_name) {
-    # Vérifier si le sous-tableau est non vide et contient les colonnes nécessaires
-    if (nrow(sous_table) > 0 && all(c("nb_obs", "nb_obs_ckm") %in% names(sous_table))) {
-      calcul_distance(sous_table, "nb_obs", "nb_obs_ckm", paste(tab_name, sous_name, sep = "_"))
-    } else {
-      return(NULL)  # Retourner NULL si les conditions ne sont pas remplies
-    }
-  })
-})
-
