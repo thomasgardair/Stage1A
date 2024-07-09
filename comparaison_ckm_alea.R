@@ -55,15 +55,47 @@ calcul_distance(tableau_perturbe, "nb_obs", "nb_obs_alea")
 spearman_test(tableau_perturbe,"nb_obs","nb_obs_alea")
 spearman_test(tableau_perturbe,"nb_obs","nb_obs_ckm")
 
-#6- Test Wilcoxon
+# 6- Test Wilcoxon
 wilcoxon_test(tableau_perturbe, "nb_obs","nb_obs_alea")
 wilcoxon_test(tableau_perturbe, "nb_obs","nb_obs_ckm")
 
 
-#7- Variance
+# 7- Variance
 VR(tableau_perturbe,"nb_obs","nb_obs_alea")
 VR(tableau_perturbe,"nb_obs","nb_obs_ckm")
 
+# 8- Sous tableaux
+
+liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
+  tableau = tableau_perturbe,
+  vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
+ )
+liste_sous_tableaux_alea <- recuperer_ts_sous_tableaux(
+  tableau = tableau_perturbe,
+  vars_cat = c("SEX","AGE","DIPL","REGION","DEPT"),
+  vars_num = "nb_obs_alea", mod_total = "Total"
+)
+
+tableau_orig <- liste_sous_tableaux_orig$tabs_2Var$SEX_DIPL
+tableau_pert <- liste_sous_tableaux_alea$tabs_2Var$SEX_DIPL
+
+# 9- Tableau contingence
+
+tab_orig <- from_df_to_contingence(tableau_orig)
+tab_pert <- from_df_to_contingence(tableau_pert,"nb_obs_alea")
+
+# 10- Vcramer
+
+Taux_Variation_Vcramer(tab_orig,tab_pert)
+
+#11- acf
+afc(tab_orig,tab_pert)
+
+#12- Rapport de vraisemblance 
+RV(tab_orig,tab_pert,~ SEX + DIPL )
+
+
+#pessayer de generaliser les focntions a tout lkes osus tableuax ern faisaint des boucles par exemploe et en particulier pour tout les sous tableauc de contingences 
 
 
 set.seed(123) 
