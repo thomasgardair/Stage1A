@@ -19,8 +19,8 @@
 #' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT),
 #' vars_num = "nb_obs_alea", mod_total = "Total"
 #' )
-#' tableau_orig <- liste_sous_tableaux$tabs_2Var$REGION_DIPL
-#' tableau_pert <- liste_sous_tableaux$tabs_2Var$REGION_DIPL
+#' tableau_orig <- liste_sous_tableaux$tabs_2Var$DIPL_REGION
+#' tableau_pert <- liste_sous_tableaux$tabs_2Var$DIPL_REGION
 #' tab_orig <- from_df_to_contingence(tableau_orig)
 #' tab_pert <- from_df_to_contingence(tableau_pert)
 #' afc(tab_orig,tab_pert)
@@ -73,7 +73,7 @@ afc <- function(table_contingence_orig, table_contingence_pert){
     geom_hline(yintercept = 0, color = "black", linetype="dashed") +
     geom_vline(xintercept = 0, color = "black",linetype="dashed")
   
-  return(list(plot_row = plot_row, plot_col = plot_col, test_orig = test_orig, test_pert = test_pert))
+  return(list(plot_row = plot_row, plot_col = plot_col))
 }
 
 
