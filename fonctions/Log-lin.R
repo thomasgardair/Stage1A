@@ -13,17 +13,17 @@
 #' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
 #' liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
 #'   tableau = tab_avec_AL,
-#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT)
+#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
 #' )
-#' liste_sous_tableau_alea <- recuperer_ts_sous_tableaux(
+#' liste_sous_tableaux_alea <- recuperer_ts_sous_tableaux(
 #' tableau = tab_avec_AL,
-#' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT),
+#' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT"),
 #' vars_num = "nb_obs_alea", mod_total = "Total"
 #' )
-#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
-#' tableau_pert <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tableau_orig <- liste_sous_tableaux_orig$tabs_2Var$SEX_DIPL
+#' tableau_pert <- liste_sous_tableaux_alea$tabs_2Var$SEX_DIPL
 #' tab_orig <- from_df_to_contingence(tableau_orig)
-#' tab_pert <- from_df_to_contingence(tableau_pert)
+#' tab_pert <- from_df_to_contingence(tableau_pert,"nb_obs_alea")
 #' RV(tab_orig,tab_pert,~ SEX + DIPL )
 RV <- function(table_contingence_orig, table_contingence_pert, formula) {
   

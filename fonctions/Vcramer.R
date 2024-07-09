@@ -13,7 +13,7 @@
 #'   tableau = tab_avec_AL,
 #'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT)
 #' )
-#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tableau_orig <- liste_sous_tableaux_orig$tabs_2Var$SEX_DIPL
 #' tab <- from_df_to_contingence(tableau_orig)
 #' Vcramer(tab)
 Vcramer <- function(tab){
@@ -43,17 +43,17 @@ Vcramer <- function(tab){
 #' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
 #' liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
 #'   tableau = tab_avec_AL,
-#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT)
+#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
 #' )
-#' liste_sous_tableau_alea <- recuperer_ts_sous_tableaux(
+#' liste_sous_tableaux_alea <- recuperer_ts_sous_tableaux(
 #' tableau = tab_avec_AL,
-#' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT),
+#' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT"),
 #' vars_num = "nb_obs_alea", mod_total = "Total"
 #' )
-#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
-#' tableau_pert <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tableau_orig <- liste_sous_tableaux_orig$tabs_2Var$SEX_DIPL
+#' tableau_pert <- liste_sous_tableaux_alea$tabs_2Var$SEX_DIPL
 #' tab_orig <- from_df_to_contingence(tableau_orig)
-#' tab_pert <- from_df_to_contingence(tableau_pert)
+#' tab_pert <- from_df_to_contingence(tableau_pert,"nb_obs_alea")
 #' Taux_Variation_Vcramer(tab_orig,tab_pert)
 
 Taux_Variation_Vcramer <- function(table_orig, table_pert) {
@@ -63,14 +63,16 @@ Taux_Variation_Vcramer <- function(table_orig, table_pert) {
   test_pert <- chisq.test(table_pert)
   
   vcramer_diff <- "L'indépendance n'est pas rejetée pour l'un ou les deux tableaux."
+  vcramer_original <- NaN
+  vcramer_perturbe <- NaN
   
   if (test_orig$p.value < 0.05 && test_pert$p.value < 0.05) {
-    vcramer_original <- Vcramer(table_pert)
+    vcramer_original <- Vcramer(table_orig)
     vcramer_perturbe <- Vcramer(table_pert)
     
-    vcramer_diff <- (abs(vcramer_original - vcramer_perturbed)/vcramer_original)*100
+    vcramer_diff <- (abs(vcramer_original - vcramer_perturbe)/vcramer_original)*100
   }
   
-  return(list(test_orig = test_orig, test_pert = test_pert, vcramer_original = vcramer_original, vcramer_perturbe=vcramer_perturbe, vcramer_diff = vcramer_diff))
+  return(list(test_orig = test_orig, test_pert = test_pert, vcramer_original = vcramer_original, vcramer_perturbe = vcramer_perturbe, vcramer_diff = vcramer_diff))
 }
 

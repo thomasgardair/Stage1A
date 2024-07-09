@@ -30,7 +30,7 @@ source("fonctions/fonction_afc.R")
 source("fonctions/fonction_extraction.R")
 source("fonctions/Log-lin.R")
 source("fonctions/Vcramer.R")
-
+source("fonctions/Tableau_contingence.R")
 set.seed(40889)
 # 1- Générer les micro
 

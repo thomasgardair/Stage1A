@@ -19,8 +19,8 @@
 #' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT),
 #' vars_num = "nb_obs_alea", mod_total = "Total"
 #' )
-#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
-#' tableau_pert <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tableau_orig <- liste_sous_tableaux$tabs_2Var$REGION_DIPL
+#' tableau_pert <- liste_sous_tableaux$tabs_2Var$REGION_DIPL
 #' tab_orig <- from_df_to_contingence(tableau_orig)
 #' tab_pert <- from_df_to_contingence(tableau_pert)
 #' afc(tab_orig,tab_pert)
