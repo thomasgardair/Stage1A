@@ -12,8 +12,8 @@
 #' library(dplyr)
 #' tableau_complet <- generer_tableau(100)
 #' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
-#' freqences_marginales(tab_avec_AL, "SEX")
-frequences_marginales <- function(tableau_complet, nb_obs, nb_obs_pert, var){
+#' frequences_marginales(tab_avec_AL,"nb_obs","nb_obs_alea", "SEX")
+frequences_marginales <- function(tableau_complet, nb_obs, nb_obs_alea, var){
   
   columns <- colnames(tableau_complet)
   columns <- columns[grepl("^[A-Z_]+$", columns)]
@@ -21,7 +21,7 @@ frequences_marginales <- function(tableau_complet, nb_obs, nb_obs_pert, var){
   
   freq <- tableau_complet %>%
     filter(if_all(all_of(columns), ~ . == "Total")) %>%
-    select(all_of(var), nb_obs, nb_obs_pert)
+    select(all_of(var), nb_obs, nb_obs_alea)
   
   return(freq)
 }

@@ -7,20 +7,23 @@
 #' @export
 #'
 #' @examples
-#' #' library(dplyr)
+#' library(dplyr)
 #' tableau_complet <- generer_tableau(100)
 #' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
 #' liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
 #'   tableau = tab_avec_AL,
-#'   vars_cat = c("SEX","AGE","DIPL","REGION")
+#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT)
 #' )
-#' liste_sous_tableau_pert <- recuperer_ts_sous_tableaux(
+#' liste_sous_tableau_alea <- recuperer_ts_sous_tableaux(
 #' tableau = tab_avec_AL,
-#' vars_cat = c("SEX","AGE","DIPL","REGION"),
+#' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT),
 #' vars_num = "nb_obs_alea", mod_total = "Total"
 #' )
-#' 
-#' afc(liste_sous_tableaux_orig$tabs_2Vars$SEX_DIPL,liste_sous_tableaux_pert$tabs_2Var$SEX_DIPL)
+#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tableau_pert <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tab_orig <- from_df_to_contingence(tableau_orig)
+#' tab_pert <- from_df_to_contingence(tableau_pert)
+#' afc(tab_orig,tab_pert)
 afc <- function(table_contingence_orig, table_contingence_pert){
   
   afc_orig <- CA(table_contingence_orig, graph = FALSE)

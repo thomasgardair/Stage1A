@@ -1,16 +1,20 @@
 #' Title
 #'
-#' @param tableau 
-#' @param freq_var 
-#' @param mod_total 
+#' @param tab tableau de contingence/matrix 
 #'
-#' @return
+#' @return V de Cramer du tableau - numeric
 #' @export
 #'
 #' @examples
+#' library(dplyr)
+#' tableau_complet <- generer_tableau(100)
+#' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
+#' liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
+#'   tableau = tab_avec_AL,
+#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT)
+#' )
 #' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
-#' tableau_pert <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
-#' tab <- from_df_to_contingence(tableau)
+#' tab <- from_df_to_contingence(tableau_orig)
 #' Vcramer(tab)
 Vcramer <- function(tab){
   
@@ -33,21 +37,25 @@ Vcramer <- function(tab){
 #' @export
 #'
 #' @examples
+
 #' library(dplyr)
 #' tableau_complet <- generer_tableau(100)
 #' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
 #' liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
 #'   tableau = tab_avec_AL,
-#'   vars_cat = c("SEX","AGE","DIPL","REGION")
+#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT)
 #' )
-#' liste_sous_tableau_pert <- recuperer_ts_sous_tableaux(
+#' liste_sous_tableau_alea <- recuperer_ts_sous_tableaux(
 #' tableau = tab_avec_AL,
-#' vars_cat = c("SEX","AGE","DIPL","REGION"),
+#' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT),
 #' vars_num = "nb_obs_alea", mod_total = "Total"
 #' )
-#' 
-#' Taux_Variation_Vcramer(liste_sous_tableaux_orig$tabs_2Vars$SEX_DIPL,liste_sous_tableaux_pert$tabs_2Var$SEX_DIPL)
-#' 
+#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tableau_pert <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tab_orig <- from_df_to_contingence(tableau_orig)
+#' tab_pert <- from_df_to_contingence(tableau_pert)
+#' Taux_Variation_Vcramer(tab_orig,tab_pert)
+
 Taux_Variation_Vcramer <- function(table_orig, table_pert) {
   
 

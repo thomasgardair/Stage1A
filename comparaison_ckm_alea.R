@@ -8,7 +8,7 @@ library(cellKey)
 library(rtauargus)
 library(purrr)
 library(MASS)
-
+library(data.table)
 
 #Paramètres fixes pour les deux méthodes
 
@@ -19,9 +19,9 @@ V=6.25
 
 
 source("fonctions/fonction_arrondi_aleatoire.R")
-source("fonctions/fonction_distance.R")
 source("fonctions/fonction_ckm.R")
 source("fonctions/fonction_generer_tableau.R")
+source("fonctions/fonction_distance.R")
 source("fonctions/Wilcoxon.R")
 source("fonctions/Spearman.R")
 source("fonctions/Variance.R")

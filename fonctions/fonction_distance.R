@@ -1,5 +1,3 @@
-#Fonction pour calculer les distances entre les valeurs originales et perturbées
-
 #' Title
 #'
 #' @param tableau_complet  tableau de données complet sous forme de dtaframe/datatable
