@@ -98,5 +98,21 @@ RV(tab_orig,tab_pert,~DIPL + REGION )
 
 
 #pessayer de generaliser les focntions a tout lkes osus tableuax ern faisaint des boucles par exemploe et en particulier pour tout les sous tableauc de contingences 
+calculer_distances_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "nb_obs", vars_num2 = "nb_obs_ckm", vars_num3 = "nb_obs_alea", mod_total = "Total") {
+  sous_tableaux <- recuperer_ts_sous_tableaux(tableau, vars_cat, vars_num1, vars_num2, vars_num3, mod_total)
+  
+  distances <- list()
+  
+  for (l in 1:length(sous_tableaux)) {
+    distances[[paste0("tabs_", l, "Var")]] <- purrr::map(
+      sous_tableaux[[l]], 
+      \(sous_tableau) calcul_distance(sous_tableau, vars_num1, vars_num2)
+    )
+  }
+  
+  return(distances)
+}
 
-
+vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
+distances <- calculer_distances_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Total")
+print(distances)

@@ -43,7 +43,7 @@ appliquer_ckm <- function(tableau, D, V) {
   tableau <- tableau %>% 
     as_tibble() %>% 
     mutate(nb_obs_ckm = nb_obs + v) %>% 
-    select(-cell_key_end, -cell_key, -rkeys_tot, -i, -v, -p_int_lb, -p_int_ub)
+    dplyr::select(-cell_key_end, -cell_key, -rkeys_tot, -i, -v, -p_int_lb, -p_int_ub)
   
   return(tableau)
 }

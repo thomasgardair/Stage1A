@@ -13,8 +13,8 @@
 #' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
 #' calcul_distance(tab_avec_AL, "nb_obs", "nb_obs_alea")
 calcul_distance <- function(tableau_complet, n_obs, n_obs_pert) {
-  obs <- tableau_complet[[n_obs]]
-  obs_pert <- tableau_complet[[n_obs_pert]]
+  obs <- as.numeric(tableau_complet[[n_obs]])
+  obs_pert <- as.numeric(tableau_complet[[n_obs_pert]])
   
   AAD <- mean(abs(obs - obs_pert))
   # L'AAD est plus intuitif et décrit la différence absolue moyenne par cellule non nulle d'une OA.

@@ -24,7 +24,7 @@ appliquer_arrondi_aleatoire <- function(tableau, B = 10) {
   tableau <- tableau %>% 
     mutate(
       nb_obs_alea = apply(
-        tableau %>% select(p_inf, p_sup, val_inf, val_sup),
+        tableau %>% dplyr::select(p_inf, p_sup, val_inf, val_sup),
         MARGIN = 1,
         FUN = \(r) sample(
           c(r[["val_inf"]], r[["val_sup"]]), 
@@ -33,7 +33,7 @@ appliquer_arrondi_aleatoire <- function(tableau, B = 10) {
         )
       )
     ) %>% 
-    select(-p_inf, -p_sup, -val_inf, -val_sup)
+    dplyr::select(-p_inf, -p_sup, -val_inf, -val_sup)
   
   return(tableau)
 }

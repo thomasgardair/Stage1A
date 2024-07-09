@@ -33,7 +33,7 @@ generer_tableau <- function(N = 10000L){
     resp_var = "rkeys",
     marge_label = "Total"
   ) %>% 
-    select(-rkeys_max)
+    dplyr::select(-rkeys_max)
   
   return(tableau_complet)
 }
