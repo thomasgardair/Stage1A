@@ -6,16 +6,19 @@
 #' @export
 #'
 #' @examples
-#' library(dplyr)
-#' tableau_complet <- generer_tableau(100)
-#' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
-#' liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
-#'   tableau = tab_avec_AL,
-#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT)
+#' tableau_original <- generer_tableau(N)
+#' tableau_perturbe <- appliquer_ckm(tableau_original, D, V)
+#' tableau_perturbe <- appliquer_arrondi_aleatoire(tableau_perturbe, B)
+#' liste_sous_tableaux <- recuperer_ts_sous_tableaux(
+#'   tableau = tableau_perturbe,
+#'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
 #' )
-#' tableau_orig <- liste_sous_tableaux_orig$tabs_2Var$SEX_DIPL
-#' tab <- from_df_to_contingence(tableau_orig)
-#' Vcramer(tab)
+#' str(liste_sous_tableaux)
+#' # Exemple pour récupérer le tableau SEX * DIPL
+#' liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tab_orig <- from_df_to_contingence(tableau_orig)
+#' Vcramer(tab_orig)
 Vcramer <- function(tab){
   
   # if (!is.table(tab)) {
@@ -38,22 +41,19 @@ Vcramer <- function(tab){
 #'
 #' @examples
 
-#' library(dplyr)
-#' tableau_complet <- generer_tableau(100)
-#' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
-#' liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
-#'   tableau = tab_avec_AL,
+#' tableau_original <- generer_tableau(N)
+#' tableau_perturbe <- appliquer_ckm(tableau_original, D, V)
+#' tableau_perturbe <- appliquer_arrondi_aleatoire(tableau_perturbe, B)
+#' liste_sous_tableaux <- recuperer_ts_sous_tableaux(
+#'   tableau = tableau_perturbe,
 #'   vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
 #' )
-#' liste_sous_tableaux_alea <- recuperer_ts_sous_tableaux(
-#' tableau = tab_avec_AL,
-#' vars_cat = c("SEX","AGE","DIPL","REGION","DEPT"),
-#' vars_num = "nb_obs_alea", mod_total = "Total"
-#' )
-#' tableau_orig <- liste_sous_tableaux_orig$tabs_2Var$SEX_DIPL
-#' tableau_pert <- liste_sous_tableaux_alea$tabs_2Var$SEX_DIPL
+#' str(liste_sous_tableaux)
+#' # Exemple pour récupérer le tableau SEX * DIPL
+#' liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
 #' tab_orig <- from_df_to_contingence(tableau_orig)
-#' tab_pert <- from_df_to_contingence(tableau_pert,"nb_obs_alea")
+#' tab_pert <- from_df_to_contingence(tableau_orig,"nb_obs_ckm","nb_obs","nb_obs_alea")
 #' Taux_Variation_Vcramer(tab_orig,tab_pert)
 
 Taux_Variation_Vcramer <- function(table_orig, table_pert) {
@@ -62,7 +62,7 @@ Taux_Variation_Vcramer <- function(table_orig, table_pert) {
   test_orig <- chisq.test(table_orig)
   test_pert <- chisq.test(table_pert)
   
-  vcramer_diff <- "L'indépendance n'est pas rejetée pour l'un ou les deux tableaux."
+  vcramer_diff <- NaN
   vcramer_original <- NaN
   vcramer_perturbe <- NaN
   
@@ -73,6 +73,8 @@ Taux_Variation_Vcramer <- function(table_orig, table_pert) {
     vcramer_diff <- (abs(vcramer_original - vcramer_perturbe)/vcramer_original)*100
   }
   
-  return(list(test_orig = test_orig, test_pert = test_pert, vcramer_original = vcramer_original, vcramer_perturbe = vcramer_perturbe, vcramer_diff = vcramer_diff))
+  return(list(khi_deux_orig = test_orig$statistic, khi_deux_pert = test_pert$statistic,
+              p_value_orig = test_orig$p.value, p_value_pert = test_pert$p.value, 
+              vcramer_orig = vcramer_original, vcramer_pert = vcramer_perturbe, vcramer_diff = vcramer_diff))
 }
 
