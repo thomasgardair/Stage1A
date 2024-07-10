@@ -53,10 +53,16 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
       }
       
       taille_sous_tableau <- nrow(sous_tableau)
+      nb_obs_inferieur_10 <- sum(sous_tableau[[vars_num1]] < 10)
+      nb_obs_ckm_inferieur_10 <- sum(sous_tableau[[vars_num2]] < 10)
+      nb_obs_alea_inferieur_10 <- sum(sous_tableau[[vars_num3]] < 10)
       
       df_resultats <- data.frame(
         Tableau = name,
         Taille = taille_sous_tableau,
+        Nb_obs_inf_10 = nb_obs_inferieur_10,
+        Nb_obs_ckm_inf_10 = nb_obs_ckm_inferieur_10,
+        Nb_obs_alea_inf_10 = nb_obs_alea_inferieur_10,
         AAD_ckm = distances_ckm$AAD, HD_ckm = distances_ckm$HD, RAD_ckm = distances_ckm$RAD,
         AAD_alea = distances_alea$AAD, HD_alea = distances_alea$HD, RAD_alea = distances_alea$RAD,
         Spearman_ckm = spearman_ckm,
