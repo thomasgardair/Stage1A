@@ -61,18 +61,30 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
         Tableau = name,
         Taille = taille_sous_tableau,
         Nb_obs_inf_10 = nb_obs_inferieur_10,
-        Nb_obs_ckm_inf_10 = nb_obs_ckm_inferieur_10,
-        Nb_obs_alea_inf_10 = nb_obs_alea_inferieur_10,
-        AAD_ckm = distances_ckm$AAD, HD_ckm = distances_ckm$HD, RAD_ckm = distances_ckm$RAD,
-        AAD_alea = distances_alea$AAD, HD_alea = distances_alea$HD, RAD_alea = distances_alea$RAD,
-        Spearman_ckm = spearman_ckm,
-        Spearman_alea = spearman_alea,
-        Wilcoxon_ckm = wilcoxon_ckm,
-        Wilcoxon_alea = wilcoxon_alea,
-        VR_ckm = vr_ckm,
-        VR_alea = vr_alea,
-        Taux_V_Cramer_ckm = taux_v_cramer_ckm,
-        Taux_V_Cramer_alea = taux_v_cramer_alea,
+        Nb_obs_inf_10_ckm = nb_obs_ckm_inferieur_10,
+        Nb_obs_inf_10_alea = nb_obs_alea_inferieur_10,
+        
+        AAD_ckm = distances_ckm$AAD, AAD_alea = distances_alea$AAD,
+        HD_ckm = distances_ckm$HD, HD_alea = distances_alea$HD,
+        RAD_ckm = distances_ckm$RAD, RAD_alea = distances_alea$RAD,
+        
+        rho_Spearman_ckm = spearman_ckm$rho, rho_Spearman_alea = spearman_alea$rho,
+        p_value_Spearman_ckm = spearman_ckm$p_value, p_value_Spearman_alea = spearman_alea$p_value,
+        
+        p_value_Wilcoxon_ckm = wilcoxon_ckm$p_value, p_value_Wilcoxon_alea = wilcoxon_alea$p_value,
+        
+        Taux_Variation_Variance_ckm = vr_ckm$vr, Taux_Variation_Variance_alea = vr_alea$vr,
+        
+        khi_deux_orig = taux_v_cramer_ckm$khi_deux_orig, 
+        khi_deux_ckm = taux_v_cramer_ckm$khi_deux_pert, khi_deux_alea = taux_v_cramer_alea$khi_deux_pert,
+        
+        p_value_orig = taux_v_cramer_ckm$p_value_orig,
+        p_value_ckm = taux_v_cramer_ckm$p_value_pert, p_value_alea = taux_v_cramer_alea$p_value_pert,
+        
+        V_Cramer_orig = taux_v_cramer_ckm$v_cramer_orig,
+        V_Cramer_ckm = taux_v_cramer_ckm$vcramer_pert, V_Cramer_alea = taux_v_cramer_alea$vcramer_pert,
+        Taux_Variation_V_Cramer_ckm = taux_v_cramer_ckm$vcramer_diff,Taux_V_Cramer_alea = taux_v_cramer_alea$vcramer$diff,
+        
         stringsAsFactors = FALSE
       )
       liste_resultats <- bind_rows(liste_resultats, df_resultats)

@@ -24,7 +24,7 @@ VR <- function(tableau_complet, n_obs,n_obs_pert){
   
   vr <- 100*(abs(V_orig - V_pert)/V_orig)
   
-  return(list(vr = vr, V_orig = V_orig, V_pert = V_pert))
+  return(list(vr = vr))
 }
 
 

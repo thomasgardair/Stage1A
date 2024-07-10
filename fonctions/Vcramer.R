@@ -58,20 +58,13 @@ Vcramer <- function(tab){
 
 Taux_Variation_Vcramer <- function(table_orig, table_pert) {
   
-
   test_orig <- chisq.test(table_orig)
   test_pert <- chisq.test(table_pert)
   
-  vcramer_diff <- NaN
-  vcramer_original <- NaN
-  vcramer_perturbe <- NaN
-  
-  if (test_orig$p.value < 0.05 && test_pert$p.value < 0.05) {
-    vcramer_original <- Vcramer(table_orig)
-    vcramer_perturbe <- Vcramer(table_pert)
+  vcramer_original <- Vcramer(table_orig)
+  vcramer_perturbe <- Vcramer(table_pert)
     
-    vcramer_diff <- (abs(vcramer_original - vcramer_perturbe)/vcramer_original)*100
-  }
+  vcramer_diff <- (abs(vcramer_original - vcramer_perturbe)/vcramer_original)*100
   
   return(list(khi_deux_orig = test_orig$statistic, khi_deux_pert = test_pert$statistic,
               p_value_orig = test_orig$p.value, p_value_pert = test_pert$p.value, 
