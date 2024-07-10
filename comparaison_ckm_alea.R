@@ -1,6 +1,5 @@
 
 # Chargement des packages --------------------------------------------
-library(dplyr)
 library(data.table)
 library(ggplot2)
 library(ptable)
@@ -11,6 +10,7 @@ library(MASS)
 library(data.table)
 library(FactoMineR)
 library(tibble)
+library(dplyr)
 
 #Paramètres fixes pour les deux méthodes
 
