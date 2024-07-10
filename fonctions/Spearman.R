@@ -22,7 +22,11 @@ spearman_test <- function(tableau_complet, nb_obs, nb_obs_pert) {
   
   test <- cor.test(obs,obs_pert, method = "spearman")
   
-  return(test)
+  return(list(
+    S = test$statistic,
+    rho = test$estimate,
+    p_value = test$p.value
+  ))
 }
 
 

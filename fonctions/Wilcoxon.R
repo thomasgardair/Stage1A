@@ -21,7 +21,10 @@ wilcoxon_test <- function(tableau_complet, nb_obs, nb_obs_pert, paired = TRUE) {
   
   test <- wilcox.test(obs, obs_pert, paired = paired)
   
-  return(test)
+  return(list(
+    V = test$statistic,
+    p_value = test$p.value
+  ))
 }
 
 
