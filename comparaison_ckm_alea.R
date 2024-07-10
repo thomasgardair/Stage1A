@@ -118,6 +118,18 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
       vr_ckm <- VR(sous_tableau, vars_num1, vars_num2)
       vr_alea <- VR(sous_tableau, vars_num1, vars_num3)
       
+      taux_v_cramer_ckm <- NA
+      taux_v_cramer_alea <- NA
+      
+      if (length(strsplit(name, "_")[[1]]) == 2) {
+        
+        tab_orig <- from_df_to_contingence(sous_tableau, vars_num1, vars_num2, vars_num3)
+        tab_pert_ckm <- from_df_to_contingence(sous_tableau, vars_num2, vars_num1, vars_num3)
+        tab_pert_alea <- from_df_to_contingence(sous_tableau, vars_num3, vars_num2, vars_num1)
+        
+        taux_v_cramer_ckm <- Taux_Variation_Vcramer(tab_orig, tab_pert_ckm)
+        taux_v_cramer_alea <- Taux_Variation_Vcramer(tab_orig, tab_pert_alea)
+      }
       
       df_resultats <- data.frame(
         Tableau = name,
@@ -129,6 +141,8 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
         Wilcoxon_alea = wilcoxon_alea,
         VR_ckm = vr_ckm,
         VR_alea = vr_alea,
+        Taux_V_Cramer_ckm = taux_v_cramer_ckm,
+        Taux_V_Cramer_alea = taux_v_cramer_alea,
         stringsAsFactors = FALSE
       )
       liste_resultats <- bind_rows(liste_resultats, df_resultats)
