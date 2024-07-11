@@ -23,6 +23,7 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
   sous_tableaux <- recuperer_ts_sous_tableaux(tableau, vars_cat, vars_num1, vars_num2, vars_num3, mod_total)
   
   liste_resultats <- list()
+  liste_afc <- list()
   
   for (l in 1:length(sous_tableaux)) {
     for (name in names(sous_tableaux[[l]])) {
@@ -42,6 +43,8 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
       taux_v_cramer_ckm <- NA
       taux_v_cramer_alea <- NA
       
+      afc_ckm <- NULL
+      afc_alea <- NULL
       
       if (length(strsplit(name, "_")[[1]]) == 2) {
         
@@ -51,6 +54,12 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
         
         taux_v_cramer_ckm <- Taux_Variation_Vcramer(tab_orig, tab_pert_ckm)
         taux_v_cramer_alea <- Taux_Variation_Vcramer(tab_orig, tab_pert_alea)
+        
+        afc_ckm <- afc(tab_orig, tab_pert_ckm)
+        afc_alea <- afc(tab_orig,tab_pert_alea)
+        
+        liste_afc[[paste0(name, "_ckm")]] <- afc_ckm
+        liste_afc[[paste0(name, "_alea")]] <- afc_alea
       }
       
       taille_sous_tableau <- nrow(sous_tableau)
@@ -96,5 +105,5 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
     }
   }
   
-  return(liste_resultats)
+  return(list(statistiques = liste_resultats, afc = liste_afc))
 }

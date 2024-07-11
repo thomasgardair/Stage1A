@@ -101,6 +101,7 @@ RV(tab_orig,tab_pert,~DIPL + REGION )
 
 vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
 
-statistiques <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Total")
-
+resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Total")
+statistiques <- resultats$statistiques
+liste_afc <- resultats$afc
 
