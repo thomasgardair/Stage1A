@@ -42,6 +42,7 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
       taux_v_cramer_ckm <- NA
       taux_v_cramer_alea <- NA
       
+      
       if (length(strsplit(name, "_")[[1]]) == 2) {
         
         tab_orig <- from_df_to_contingence(sous_tableau, vars_num1, vars_num2, vars_num3)
@@ -75,15 +76,19 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
         
         Taux_Variation_Variance_ckm = vr_ckm$vr, Taux_Variation_Variance_alea = vr_alea$vr,
         
-        khi_deux_orig = taux_v_cramer_ckm$khi_deux_orig, 
-        khi_deux_ckm = taux_v_cramer_ckm$khi_deux_pert, khi_deux_alea = taux_v_cramer_alea$khi_deux_pert,
+        khi_deux_orig = ifelse("khi_deux_orig" %in% names(taux_v_cramer_ckm), taux_v_cramer_ckm$khi_deux_orig, NA), 
+        khi_deux_ckm = ifelse("khi_deux_pert" %in% names(taux_v_cramer_ckm), taux_v_cramer_ckm$khi_deux_pert, NA),
+        khi_deux_alea = ifelse("khi_deux_pert" %in% names(taux_v_cramer_alea), taux_v_cramer_alea$khi_deux_pert, NA),
         
-        p_value_orig = taux_v_cramer_ckm$p_value_orig,
-        p_value_ckm = taux_v_cramer_ckm$p_value_pert, p_value_alea = taux_v_cramer_alea$p_value_pert,
+        p_value_orig = ifelse("p_value_orig" %in% names(taux_v_cramer_ckm), taux_v_cramer_ckm$p_value_orig, NA),
+        p_value_ckm = ifelse("p_value_pert" %in% names(taux_v_cramer_ckm), taux_v_cramer_ckm$p_value_pert, NA),
+        p_value_alea = ifelse("p_value_pert" %in% names(taux_v_cramer_alea), taux_v_cramer_alea$p_value_pert, NA),
         
-        V_Cramer_orig = taux_v_cramer_ckm$v_cramer_orig,
-        V_Cramer_ckm = taux_v_cramer_ckm$vcramer_pert, V_Cramer_alea = taux_v_cramer_alea$vcramer_pert,
-        Taux_Variation_V_Cramer_ckm = taux_v_cramer_ckm$vcramer_diff,Taux_V_Cramer_alea = taux_v_cramer_alea$vcramer$diff,
+        V_Cramer_orig = ifelse("vcramer_orig" %in% names(taux_v_cramer_ckm), taux_v_cramer_ckm$vcramer_orig, NA),
+        V_Cramer_ckm = ifelse("vcramer_pert" %in% names(taux_v_cramer_ckm), taux_v_cramer_ckm$vcramer_pert, NA),
+        V_Cramer_alea = ifelse("vcramer_pert" %in% names(taux_v_cramer_alea), taux_v_cramer_alea$vcramer_pert, NA),
+        Taux_Variation_V_Cramer_ckm = ifelse("vcramer_diff" %in% names(taux_v_cramer_ckm), taux_v_cramer_ckm$vcramer_diff, NA),
+        Taux_Variation_V_Cramer_alea = ifelse("vcramer_diff" %in% names(taux_v_cramer_alea), taux_v_cramer_alea$vcramer_diff, NA),
         
         stringsAsFactors = FALSE
       )
