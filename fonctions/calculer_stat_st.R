@@ -55,11 +55,9 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
         taux_v_cramer_ckm <- Taux_Variation_Vcramer(tab_orig, tab_pert_ckm)
         taux_v_cramer_alea <- Taux_Variation_Vcramer(tab_orig, tab_pert_alea)
         
-        afc_ckm <- afc(tab_orig, tab_pert_ckm)
-        afc_alea <- afc(tab_orig,tab_pert_alea)
+        afc_ckm_alea <- afc(tab_orig, tab_pert_ckm, tab_pert_alea)
         
-        liste_afc[[paste0(name, "_ckm")]] <- afc_ckm
-        liste_afc[[paste0(name, "_alea")]] <- afc_alea
+        liste_afc[[paste0(name, "_ckm_alea")]] <- afc_ckm_alea
       }
       
       taille_sous_tableau <- nrow(sous_tableau)
