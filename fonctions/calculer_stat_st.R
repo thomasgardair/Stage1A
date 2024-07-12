@@ -1,3 +1,4 @@
+
 #' Title
 #'
 #' @param tableau tableau de données complet sous forme de dtaframe/datatable
@@ -24,6 +25,7 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
   
   liste_resultats <- list()
   liste_afc <- list()
+  liste_distances <-list()
   
   for (l in 1:length(sous_tableaux)) {
     for (name in names(sous_tableaux[[l]])) {
@@ -100,8 +102,27 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
         stringsAsFactors = FALSE
       )
       liste_resultats <- bind_rows(liste_resultats, df_resultats)
+    
+      df_distances <- data.frame(
+        Tableau = name,
+        Taille = taille_sous_tableau,
+        AAD_ckm = distances_ckm$AAD,
+        AAD_alea = distances_alea$AAD
+      )
+      liste_distances <- bind_rows(liste_distances, df_distances)
     }
   }
+  plot_distances <- ggplot(liste_distances, aes(x = Taille)) +
+    geom_point(aes(y = AAD_ckm, color = "AAD_ckm")) +
+    geom_point(aes(y = AAD_alea, color = "AAD_alea")) +
+    labs(
+      title = "Distances en fonction de la taille des tableaux",
+      x = "Taille des tableaux",
+      y = "Distances",
+      color = "Type de Distance"
+    ) +
+    theme_minimal()
   
-  return(list(statistiques = liste_resultats, afc = liste_afc))
+  return(list(statistiques = liste_resultats, afc = liste_afc, plot_distances = plot_distances))
 }
+

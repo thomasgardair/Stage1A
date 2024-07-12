@@ -19,7 +19,7 @@ calcul_distance <- function(tableau_complet, n_obs, n_obs_pert) {
   AAD <- mean(abs(obs - obs_pert))
   # L'AAD est plus intuitif et décrit la différence absolue moyenne par cellule non nulle d'une OA.
   
-  HD <- mean(sqrt((1/2) * (sqrt(obs) - sqrt(obs_pert))^2))
+  HD <- mean(sqrt((1/2) * (sqrt(obs/sum(obs)) - sqrt(obs_pert/sum(obs_pert)))^2))
   #La distance HD est basée sur la théorie de l'information. Il est fortement influencé par les petites cellules.
   
   RAD <- mean(abs(obs - obs_pert)/obs)

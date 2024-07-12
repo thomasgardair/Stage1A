@@ -103,5 +103,5 @@ vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
 
 resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Total")
 statistiques <- resultats$statistiques
-liste_afc <- resultats$afc
+print(resultats$afc$AGE_DEPT_ckm_alea)
 
