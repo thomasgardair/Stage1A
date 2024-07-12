@@ -6,6 +6,7 @@ remotes::install_github(
   build_vignettes = FALSE,
   upgrade = "never"
 )
+install.packages("rtauargus", repos = "https://nexus.insee.fr/repository/r-public",  type="source")
 
 install.packages("ptable")
 install.packages("cellKey")

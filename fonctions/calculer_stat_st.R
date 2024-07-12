@@ -25,7 +25,9 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
   
   liste_resultats <- list()
   liste_afc <- list()
-  liste_distances <-list()
+  liste_distances_AAD <-list()
+  liste_distances_HD <-list()
+  liste_distances_RAD <-list()
   
   for (l in 1:length(sous_tableaux)) {
     for (name in names(sous_tableaux[[l]])) {
@@ -103,25 +105,38 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
       )
       liste_resultats <- bind_rows(liste_resultats, df_resultats)
     
-      df_distances <- data.frame(
+      df_distances_AAD <- data.frame(
         Tableau = name,
         Taille = taille_sous_tableau,
         AAD_ckm = distances_ckm$AAD,
         AAD_alea = distances_alea$AAD
       )
-      liste_distances <- bind_rows(liste_distances, df_distances)
+      liste_distances_AAD <- bind_rows(liste_distances_AAD, df_distances_AAD)
+      
+      df_distances_HD <- data.frame(
+        Tableau = name,
+        Taille = taille_sous_tableau,
+        HD_ckm = distances_ckm$HD,
+        HD_alea = distances_alea$HD
+      )
+      
+      liste_distances_HD <- bind_rows(liste_distances_HD, df_distances_HD)
+      
+      df_distances_RAD <- data.frame(
+        Tableau = name,
+        Taille = taille_sous_tableau,
+        RAD_ckm = distances_ckm$RAD,
+        RAD_alea = distances_alea$RAD
+      )
+      liste_distances_RAD <- bind_rows(liste_distances_RAD, df_distances_RAD)
     }
   }
-  plot_distances <- ggplot(liste_distances, aes(x = Taille)) +
-    geom_point(aes(y = AAD_ckm, color = "AAD_ckm")) +
-    geom_point(aes(y = AAD_alea, color = "AAD_alea")) +
-    labs(
-      title = "Distances en fonction de la taille des tableaux",
-      x = "Taille des tableaux",
-      y = "Distances",
-      color = "Type de Distance"
-    ) +
-    theme_minimal()
+  
+  plot_distances_AAD <- generer_graphique_distances(liste_distances_AAD)
+  plot_distances_HD <- generer_graphique_distances(liste_distances_HD)
+  plot_distances_RAD <- generer_graphique_distances(liste_distances_RAD)
+  
+  plot_distances <- list(plot_distances_AAD = plot_distances_AAD, plot_distances_HD = plot_distances_HD, plot_distances_RAD = plot_distances_RAD)
   
   return(list(statistiques = liste_resultats, afc = liste_afc, plot_distances = plot_distances))
 }

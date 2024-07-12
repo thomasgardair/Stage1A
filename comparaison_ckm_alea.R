@@ -11,6 +11,7 @@ library(data.table)
 library(FactoMineR)
 library(tibble)
 library(dplyr)
+library(tidyr)
 
 #Paramètres fixes pour les deux méthodes
 
@@ -40,9 +41,32 @@ set.seed(40889)
 tableau_original <- generer_tableau(N)
 str(tableau_original)
 
+#1- Appeler les micro
+
+data <- "X:/HAB-INVEST-CONFIDENTIALITE/QPV/Pole_Emploi/liste_tableaux_pole_emploi_avant_pert.rds" 
+
+liste_tableaux <-readRDS(data)
+
+str(liste_tableaux)
+
+tableau_1 <-liste_tableaux[[1]]
+tableau_1 <- tableau_1 %>% select(-rkeys_max,-ck) %>%rename(PLGQP = PLG_QP)
+
+tableau_2 <-liste_tableaux[[2]]
+tableau_2 <- tableau_2 %>% select(-rkeys_max,-ck)
+
+tableau_3 <-liste_tableaux[[3]]
+tableau_3 <- tableau_3 %>% select(-rkeys_max,-ck)
+
+tableau_4 <-liste_tableaux[[4]]
+tableau_4 <- tableau_4 %>% select(-rkeys_max,-ck)
+
+tableau_5 <-liste_tableaux[[5]]
+tableau_5 <- tableau_5 %>% select(-rkeys_max,-ck)
+
 # 2- Appliquer la CKM
 
-tableau_perturbe <- appliquer_ckm(tableau_original, D, V)
+tableau_perturbe <- appliquer_ckm(tableau_1, D, V)
 str(tableau_perturbe)
 
 
@@ -50,58 +74,17 @@ str(tableau_perturbe)
 tableau_perturbe <- appliquer_arrondi_aleatoire(tableau_perturbe, B)
 str(tableau_perturbe)
 
-# 4- Distance
-calcul_distance(tableau_perturbe, "nb_obs", "nb_obs_ckm")
-calcul_distance(tableau_perturbe, "nb_obs", "nb_obs_alea")
 
-# 5- Test Spearman
-spearman_test(tableau_perturbe,"nb_obs","nb_obs_alea")
-spearman_test(tableau_perturbe,"nb_obs","nb_obs_ckm")
+#4- Tout en 1
 
-# 6- Test Wilcoxon
-wilcoxon_test(tableau_perturbe, "nb_obs","nb_obs_alea")
-wilcoxon_test(tableau_perturbe, "nb_obs","nb_obs_ckm")
+vars_cat = c("CATEG","PLGQP","SEXE")
 
 
-# 7- Variance
-VR(tableau_perturbe,"nb_obs","nb_obs_alea")
-VR(tableau_perturbe,"nb_obs","nb_obs_ckm")
 
-# 8- Sous tableaux
-
-liste_sous_tableaux_orig <- recuperer_ts_sous_tableaux(
-  tableau = tableau_perturbe,
-  vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
- )
-liste_sous_tableaux_alea <- recuperer_ts_sous_tableaux(
-  tableau = tableau_perturbe,
-  vars_cat = c("SEX","AGE","DIPL","REGION","DEPT"),
-  vars_num = "nb_obs_alea", mod_total = "Total"
-)
-
-tableau_orig <- liste_sous_tableaux_orig$tabs_2Var$DIPL_REGION
-tableau_pert <- liste_sous_tableaux_alea$tabs_2Var$DIPL_REGION
-
-# 9- Tableau contingence
-
-tab_orig <- from_df_to_contingence(tableau_orig)
-tab_pert <- from_df_to_contingence(tableau_pert,"nb_obs_alea")
-
-# 10- Vcramer
-
-Taux_Variation_Vcramer(tab_orig,tab_pert)
-
-#11- acf
-afc(tab_orig,tab_pert)
-
-#12- Rapport de vraisemblance 
-RV(tab_orig,tab_pert,~DIPL + REGION )
-
-#12- Tout en 1
-
-vars_cat = c("SEX","AGE","DIPL","REGION","DEPT")
-
-resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Total")
+resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
 statistiques <- resultats$statistiques
-print(resultats$afc$AGE_DEPT_ckm_alea)
+afc <- resultats$afc
+resultats$afc$CATEG_SEXE_ckm_alea
+plot <- resultats$plot_distances
+resultats$plot_distances$plot_distances_HD
 

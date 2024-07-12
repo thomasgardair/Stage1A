@@ -17,8 +17,8 @@
 #' )
 #' str(liste_sous_tableaux)
 #' # Exemple pour récupérer le tableau SEX * DIPL
-#' liste_sous_tableaux$tabs_2Var$SEX_DIPL
-#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' liste_sous_tableaux$tabs_2Var$SEX_AGE
+#' tableau_orig <- liste_sous_tableaux$tabs_2Var$SEX_AGE
 #' from_df_to_contingence(tableau_orig)
 #' from_df_to_contingence(tableau_orig,"nb_obs_ckm","nb_obs","nb_obs_alea")
 from_df_to_contingence <- function(tableau, freq_var1 =  "nb_obs", freq_var2 =  "nb_obs_ckm", freq_var3 =  "nb_obs_alea", mod_total = "Total"){

@@ -19,7 +19,7 @@
 #' )
 #' str(liste_sous_tableaux)
 #' # Exemple pour récupérer le tableau SEX * DIPL
-#' liste_sous_tableaux$tabs_2Var$SEX_DIPL
+#' liste_sous_tableaux$tabs_2Var$SEX_DEPT
 recuperer_ts_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "nb_obs", vars_num2= "nb_obs_ckm",vars_num3 = "nb_obs_alea", mod_total = "Total"){
   
   require(purrr)
