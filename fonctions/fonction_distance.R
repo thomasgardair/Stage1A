@@ -12,7 +12,13 @@
 #' tableau_complet <- generer_tableau(100)
 #' tab_avec_AL <- appliquer_arrondi_aleatoire(tableau_complet, 10)
 #' calcul_distance(tab_avec_AL, "nb_obs", "nb_obs_alea")
-calcul_distance <- function(tableau_complet, n_obs, n_obs_pert) {
+calcul_distance <- function(tableau_complet, n_obs, n_obs_pert, mod_total) {
+  
+  columns <- colnames(tableau_complet)
+  columns <- columns[grepl("^[A-Z_]+$", columns)]
+  
+  tableau_complet <- tableau_complet %>%  filter(if_all(all_of(columns), ~ . != mod_total)) 
+  
   obs <- as.numeric(tableau_complet[[n_obs]])
   obs_pert <- as.numeric(tableau_complet[[n_obs_pert]])
   

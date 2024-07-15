@@ -53,20 +53,20 @@ tableau_1 <-liste_tableaux[[1]]
 tableau_1 <- tableau_1 %>% select(-rkeys_max,-ck) %>%rename(PLGQP = PLG_QP)
 
 tableau_2 <-liste_tableaux[[2]]
-tableau_2 <- tableau_2 %>% select(-rkeys_max,-ck)
+tableau_2 <- tableau_2 %>% select(-rkeys_max,-ck)%>%rename(PLGQP = PLG_QP)%>%rename(AGE3c = AGE_3c)
 
 tableau_3 <-liste_tableaux[[3]]
-tableau_3 <- tableau_3 %>% select(-rkeys_max,-ck)
+tableau_3 <- tableau_3 %>% select(-rkeys_max,-ck)%>%rename(PLGQP = PLG_QP)
 
 tableau_4 <-liste_tableaux[[4]]
-tableau_4 <- tableau_4 %>% select(-rkeys_max,-ck)
+tableau_4 <- tableau_4 %>% select(-rkeys_max,-ck)%>%rename(PLGQP = PLG_QP)
 
 tableau_5 <-liste_tableaux[[5]]
-tableau_5 <- tableau_5 %>% select(-rkeys_max,-ck)
+tableau_5 <- tableau_5 %>% select(-rkeys_max,-ck)%>%rename(PLGQP = PLG_QP)
 
 # 2- Appliquer la CKM
 
-tableau_perturbe <- appliquer_ckm(tableau_1, D, V)
+tableau_perturbe <- appliquer_ckm(tableau_5, D, V)
 str(tableau_perturbe)
 
 
@@ -77,14 +77,11 @@ str(tableau_perturbe)
 
 #4- Tout en 1
 
-vars_cat = c("CATEG","PLGQP","SEXE")
 
-
+vars_cat = c("CATEG","PLGQP","RSA")
 
 resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
 statistiques <- resultats$statistiques
 afc <- resultats$afc
-resultats$afc$CATEG_SEXE_ckm_alea
 plot <- resultats$plot_distances
-resultats$plot_distances$plot_distances_HD
-
+ratio<-resultats$ratios$individual_ratios$CATEG

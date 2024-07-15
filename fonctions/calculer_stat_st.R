@@ -32,6 +32,8 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
   for (l in 1:length(sous_tableaux)) {
     for (name in names(sous_tableaux[[l]])) {
       sous_tableau <- sous_tableaux[[l]][[name]]
+      
+      
       distances_ckm <- calcul_distance(sous_tableau, vars_num1, vars_num2)
       distances_alea <- calcul_distance(sous_tableau, vars_num1, vars_num3)
       
