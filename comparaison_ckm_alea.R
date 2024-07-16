@@ -35,6 +35,7 @@ source("fonctions/Log-lin.R")
 source("fonctions/Vcramer.R")
 source("fonctions/Tableau_contingence.R")
 source("fonctions/calculer_stat_st.R")
+source("fonctions/plot.R")
 set.seed(40889)
 # 1- Générer les micro
 
@@ -44,6 +45,8 @@ str(tableau_original)
 #1- Appeler les micro
 
 data <- "X:/HAB-INVEST-CONFIDENTIALITE/QPV/Pole_Emploi/liste_tableaux_pole_emploi_avant_pert.rds" 
+
+data2 <- "X:/HAB-INVEST-CONFIDENTIALITE/QPV/Pole_Emploi/tableau_PE_6VARS.RDS"
 
 liste_tableaux <-readRDS(data)
 
@@ -66,7 +69,7 @@ tableau_5 <- tableau_5 %>% select(-rkeys_max,-ck)%>%rename(PLGQP = PLG_QP)
 
 # 2- Appliquer la CKM
 
-tableau_perturbe <- appliquer_ckm(tableau_5, D, V)
+tableau_perturbe <- appliquer_ckm(tableau_1, D, V)
 str(tableau_perturbe)
 
 
@@ -78,10 +81,14 @@ str(tableau_perturbe)
 #4- Tout en 1
 
 
-vars_cat = c("CATEG","PLGQP","RSA")
+vars_cat = c("CATEG","PLGQP","SEXE")
 
 resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
 statistiques <- resultats$statistiques
-afc <- resultats$afc
-plot <- resultats$plot_distances
-ratio<-resultats$ratios$individual_ratios$CATEG
+plot_afc <- resultats$afc
+plot_distances <- resultats$plot_distances
+
+compare_AAD <- statistiques %>% select(Tableau,Taille, AAD_ckm,AAD_alea)
+compare_HD <- statistiques %>% select(Tableau,Taille, HD_ckm,HD_alea)
+compare_RAD <- statistiques %>% select(Tableau,Taille, RAD_ckm,RAD_alea)
+
