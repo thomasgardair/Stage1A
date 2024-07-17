@@ -81,14 +81,56 @@ str(tableau_perturbe)
 #4- Tout en 1
 
 
-vars_cat = c("CATEG","PLGQP","SEXE")
+vars_cats = c("CATEG","PLGQP","SEXE")
 
-resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
+resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cats, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
 statistiques <- resultats$statistiques
 plot_afc <- resultats$afc
 plot_distances <- resultats$plot_distances
 
-compare_AAD <- statistiques %>% select(Tableau,Taille, AAD_ckm,AAD_alea)
-compare_HD <- statistiques %>% select(Tableau,Taille, HD_ckm,HD_alea)
-compare_RAD <- statistiques %>% select(Tableau,Taille, RAD_ckm,RAD_alea)
 
+
+
+# Lancer le calcul des stats sur tous les tableaux
+
+liste_resultats <- liste_tableaux %>% 
+  purrr::map(
+    \(tab){
+      tableau_perturbe <- appliquer_ckm(tab, D, V) %>% 
+        appliquer_arrondi_aleatoire(B)
+      
+      tableau_perturbe <- tableau_perturbe %>% rename(PLGQP = PLG_QP)
+      if("AGE_3c" %in% names(tableau_perturbe)) 
+        tableau_perturbe <- tableau_perturbe %>% rename(AGE3c = AGE_3c)
+      vars_cat <- tableau_perturbe %>% select(where(is.character)) %>% names()
+      res <- calculer_statistiques_sous_tableaux(
+        tableau_perturbe %>% select(-rkeys_max,-ck), vars_cat, 
+        "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble"
+      )
+    }, 
+    .progress = TRUE
+  )
+
+all_statistiques <- purrr::map(liste_resultats, \(r) r$statistiques) %>%
+  purrr::list_rbind()
+
+rownames(all_statistiques) <- NULL
+
+all_statistiques <- all_statistiques %>% 
+  group_by(across(-ends_with("_alea"))) %>% 
+  summarise(
+    across(ends_with("_alea"), mean, na.rm = TRUE),
+    .groups = "drop"
+  )
+  
+ggplot(all_statistiques) +
+  geom_point(aes(x = Taille, y = HD_ckm))
+
+ggplot(all_statistiques) +
+  geom_point(aes(x = Taille, y = HD_ckm, color = 'HD_ckm')) +
+  geom_point(aes(x = Taille, y = HD_alea, color = 'HD_alea')) +
+  labs(title = "Superposition des points HD_ckm et HD_alea",
+       x = "Nombre de cellules",
+       y = "Distances Hellinger",
+       color = "Légende") +
+  theme_bw()

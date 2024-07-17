@@ -1,6 +1,7 @@
 ---
-title: "Etudier la perte d'information de données perturbées par une Cell Key Method"
-output: html_document
+title: "Analyse de l'utilité de données perturbées par une Cell Key Method"
+output:
+  html_document: default
 date: "2024-07-16"
 ---
 
@@ -25,7 +26,7 @@ suppressPackageStartupMessages(library(tidyr))
 ```
 
 
-```{r chargement données, include=FALSE, cache=TRUE}
+```{r chargement données, include=FALSE, cache=FALSE}
 # source("Z:/Stage1A/fonctions/fonction_afc.R")
 source("Z:/Stage1A/comparaison_ckm_alea.R")
 ```
@@ -34,34 +35,29 @@ source("Z:/Stage1A/comparaison_ckm_alea.R")
 Nous allons étudier la perte d'information de données perturbées par une Cell Key Method.
 
 
-## Chargement des données
+## Données utilisées
 
 Pour faire notre analyse, nous avons à notre disposition des données Pôle Emploie original regroupant 5 tableaux ayant chacun des spécificités différentes comme la catégorie, le quartier prioritaire, le sexe, la catégorie d'age, le niveau de formation, dur et si l'individu est au RSA. Une premiere présentation de ces données peut être faite comme suit:  
 
-```{r liste_tableaux}
+```{r liste_tableaux, cache=FALSE}
 str(liste_tableaux)
 ```
 
 
-## Applications des méthodes 
+## Méthodes de perturbations des données
 
-Nous allons ensuite appliquer la CKM et l'arrondi aleatoire a nos tableaux affin de pouvoir comparer les deux méthodes perturbatrices. Un exemple pour le premier tableau est présenté ici : 
+Nous allons ensuite appliquer la CKM et l'arrondi aleatoire à nos tableaux affin de pouvoir comparer les deux méthodes perturbatrices. Par esemple pour notre premier tableau contenant données originales et perturbées est présenté ici : 
 
-```{r tableau_perturbe, eval=FALSE}
-
+```{r tableau_perturbe, echo=FALSE}
 tableau_perturbe <- appliquer_ckm(tableau_1, D, V)
 tableau_perturbe <- appliquer_arrondi_aleatoire(tableau_perturbe, B)
-```
-```{r}
 str(tableau_perturbe)
+
 ```
-
-
-## Applications fonctions 
 
 Après avoir appliquer les méthodes, notre objectif est de mesurer de différentes manières les conséquences de ces méthodes sur l'utilité des données, en comparant diverses métriques et analyses statistiques avant et après l'application de ces méthodes.
 
-Pour cela, nous disposons d'une fonction qui ,pour chaque sous tableaux et chaque méthodes, va renvoyer le nombre de cellules du tableaux, le nombre de cellules inférieur à 10, les distances moyennes par cellules, d'Hellinger et relatives absolues. Mais aussi les test de Spearman et Wilcoxon, le taux de variation de variance et le V de cramer et statistiques associées.  
+Pour cela, nous disposons d'une fonction qui ,pour chaque sous tableaux et chaque méthodes, va renvoyer le nombre de cellules du tableaux, le nombre de cellules inférieur à 10, les distances moyennes par cellules, distance de Hellinger et distance relatives absolues. Nous avons aussi à notre dispositions les test de Spearman et Wilcoxon, le taux de variation de variance et le V de cramer et statistiques associées.  
 
 ```{r resultats, eval=FALSE}
 resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
@@ -78,33 +74,134 @@ plot_distances <- resultats$plot_distances
 
 ```
 
-## Comparaison CKM et Arrondi Aléatoire 
+## Mesures d'utilité des données pour les méthodes CKM et Arrondi aléatoire
 
-Dès lors nous pouvons afficher notre tableau avec nos statistiques afin de les évaluer :
+Une première statistique intéressante concerne le nombre d'observations inférieures à 10 :
 
 
 
-```{r statistique}
+```{r statistique, cache=FALSE}
 library(DT)
-DT::datatable(statistiques)
+DT::datatable(all_statistiques %>% select(Tableau,Taille, Nb_obs_inf_10, Nb_obs_inf_10_ckm, Nb_obs_inf_10_alea))
 
 ```
+Pour la méthode CKM, cette statistique semble être respectée dans tous les cas possibles, indépendamment de la taille du tableau, avec un nombre d'observations inférieures à 10 constant. En revanche, pour l'arrondi aléatoire, on observe que le nombre d'observations inférieures à 10 est plus que divisé par deux.
 
-Intérressons nous plus précisement aux distances :
+Il est important de noter que cette statistique ne nous permet pas de déterminer si ce sont les mêmes cellules qui restent en dessous de 10 ou si cela varie.
+
+### Mesurer la distorsion des distributions
+
+Dans cette section, nous allons nous interresser aux distances entre les cellules originales et  perturbées. Nous nous focaliserons sur deux distances : la distance absolue moyenne par cellule et la distance de Hellinger.
+
+Soit \(D_k\) représentant un tableau pour l'observation \(k\) et \(D_k(c)\) la fréquence de la cellule \(c\) dans le tableau. Soit \(|OA|\) le nombre total de cellules. Les métriques de distance sont :
+
+#### Distance de Hellinger
+
+\[ 
+HD(D_{\text{orig}}, D_{\text{pert}}) = \frac{1}{|OA|} \sum_{k=1}^{|OA|} \sqrt{ \frac{1}{2} \left( \sqrt{D_{k,\text{pert}}(c)} - \sqrt{D_{k,\text{orig}}(c)} \right)^2 }
+\]
+
+#### Distance Absolue Moyenne par Cellule
+
+\[ 
+AAD(D_{\text{orig}}, D_{\text{pert}}) = \frac{1}{|OA|} \sum_{k=1}^{|OA|} \left| D_{k,\text{pert}}(c) - D_{k,\text{orig}}(c) \right|
+\]
 
 
+La distance HD est basée sur la théorie de l'information. Elle est fortement influencé par les petites cellules.
+L'AAD est plus intuitif et décrit la différence absolue moyenne par cellule non nulle d'une OA
+Les tableaux suivant présente les résultats des mesures d'utilité pour les différentes méthodes SDC.
+
+Pour la distance moyenne par cellule, on a :
 ```{r, echo=FALSE}
-DT ::datatable(statistiques %>% select(Tableau,Taille, AAD_ckm,AAD_alea))
+DT ::datatable(all_statistiques %>% select(Tableau,Taille, AAD_ckm,AAD_alea))  %>%formatRound(columns = c('AAD_ckm', 'AAD_alea'), digits = 1)
 ```
 
 Que l'on peut représenter sur un graphique :
 
 ```{r, echo=FALSE}
-library(knitr)
-include_graphics("distances/tableau1/Rplot.png")
+ggplot(all_statistiques) +
+  geom_point(aes(x = Taille, y = AAD_ckm, color = 'AAD_ckm')) +
+  geom_point(aes(x = Taille, y = AAD_alea, color = 'AAD_alea')) +
+  labs(title = "Distance en fonction du nombre de cellules",
+       x = "Nombre de cellules",
+       y = "Distances moyenne par cellules",
+       color = "Légende") +
+  theme_bw()
 
 
 ```
+
+Pour la distance de Hellinger on a : 
+```{r, echo=FALSE}
+ DT ::datatable(all_statistiques %>% select(Tableau,Taille, HD_ckm,HD_alea))%>%formatRound(columns = c('HD_ckm', 'HD_alea'), digits = 4)
+```
+
+
+Que l'on peut representer : 
+
+```{r, echo=FALSE}
+ggplot(all_statistiques) +
+  geom_point(aes(x = Taille, y = HD_ckm, color = 'HD_ckm')) +
+  geom_point(aes(x = Taille, y = HD_alea, color = 'HD_alea')) +
+  labs(title = "Distance en fonction du nombre de cellules",
+       x = "Nombre de cellules",
+       y = "Distances Hellinger",
+       color = "Légende") +
+  theme_bw()
+```
+
+### Impact sur les mesures d'association
+Vcramer + graphique Vcramer 
+
+
+
+### Tests d'hypothèses statistiques pour détecter les biais
+#### Test de Spearman
+
+Un autre outil d'inférence statistique est la corrélation de rang de Spearman. Il s'agit d'une technique qui teste la direction et la force de la relation entre deux variables. La statistique est basée sur le classement des deux variables de la plus élevée à la plus basse et sur le calcul d'une statistique de corrélation. Une évaluation importante pour analyser l’impact des méthodes SDC sur les données statistiques consiste à vérifier si le classement des valeurs au sein des variables est faussé. Dans le cadre de la comparaison entre le tableau original (nb_obs) et le tableau perturbé (nb_obs_ckm ou nb_obs_alea), le test de Spearman permet d'évaluer si la structure des rangs des données est maintenue après perturbation.
+
+```{r, echo=FALSE}
+DT::datatable(all_statistiques %>% select(Tableau,Taille, rho_Spearman_ckm, rho_Spearman_alea,p_value_Spearman_ckm, p_value_Spearman_alea))%>%formatRound(columns = c('rho_Spearman_ckm', 'rho_Spearman_alea', 'p_value_Spearman_ckm', 'p_value_Spearman_alea'), digits = 3)
+```
+Une valeur de rho proche de 1 indique une forte corrélation. Cela signifie que les rangs des données originales et perturbées sont fortement liés. Alors qu'Une valeur de rho proche de 0 indique une faible corrélation, ce qui suggère que la perturbation a modifié la structure des rangs des données.
+
+Si la valeur p est supérieure à 0.05, on ne peut pas rejeter l'hypothèse nulle. Cela signifie qu'il n'y a pas de preuve statistiquement significative de corrélation entre les deux ensembles de données. alors que Si la valeur p est inférieure ou égale à 0.05, on rejette l'hypothèse nulle. Cela signifie qu'il y a une preuve statistiquement significative de corrélation entre les deux ensembles de données.
+
+Dans notre cas, les valeur rho sont toujours très proche de 1 peu importe la méthode et la valeur de p inférieur à 0.05.On remarque que la ckm est toujours meilleurs que l'arrondi aléatoire si on compare leurs valeurs de rho.
+
+#### Test de Wilcoxon
+
+Nous pouvons aussi utiliser un test de classement signé de Wilcoxen pour vérifier si l'emplacement de la distribution empirique a changé. L'hypothèse nulle du test est la suivante : aucun changement. La statistique standardisée est basée sur le classement des cellules dans le tableau et tester si la somme des scores de classement pour les cellules d'origine dévie de la moyenne attendue sous l’hypothèse nulle d’égalité de localisation. S'il y a un grand écart (petite valeur p), alors on peut dire que l'emplacement de la distribution a été décalé. Le tableau suivant présente les valeurs p pour le test de classement signé de Wilcoxon.
+
+```{r, echo=FALSE}
+DT ::datatable(all_statistiques %>% select(Tableau,Taille,p_value_Wilcoxon_ckm, p_value_Wilcoxon_alea))%>%formatRound(columns = c('p_value_Wilcoxon_ckm', 'p_value_Wilcoxon_alea'), digits = 3)
+```
+
+Le tenesure tableau montre des valeurs p significatives et nous rejetons l'hypothèse nulle du
+même emplacement. Le tableau étant plus uniforme, il apparaît que les méthodes SDC ont un
+impact plus important sur la distribution des comptes cellulaires. Les autres tableaux ne sont pas
+significatifs, à l'exception de la suppression des cellules avec moyennes simples imputées sur le
+tableau de l'emploie.
+
+### Impact sur la variance des estimations
+
+Les méthodes SDC auront un impact sur les variances calculées pour les estimations basées sur les
+tableaux de fréquence. Nous examinons la variance du nombre de cellules  avant et après les méthodes SDC en calculant le taux de variation de variance.
+
+```{r, echo=FALSE}
+DT ::datatable(all_statistiques %>% select(Tableau,Taille,Taux_Variation_Variance_ckm, Taux_Variation_Variance_alea)) %>% formatRound(columns = c('Taux_Variation_Variance_ckm', 'Taux_Variation_Variance_alea'), digits = 6)
+```
+Pour tous les tableaux, la suppression de cellules avec des moyennes simples imputées (SA) et des
+moyennes pondérées (S-WA) entraîne une variance globale plus faible par rapport aux tableaux
+d'origine. Cela indique que ces méthodes SDC, en particulier la méthode SA, produisent des décomptes
+cellulaires plus uniformes. Les méthodes stochastiques d'arrondi (SCA et RaRo) ont peu d'impact sur le
+nombre de cellules des tableaux sur la durée d'occupation et l'emploi. Le tableau d’origine ethnique, qui
+comporte une grande colonne et de très nombreuses colonnes clairsemées, comporte de petites
+cellules plus uniformes basées sur des procédures d’arrondi complet (RaRo et CR(3)), ce qui permet
+d’obtenir une variance globale plus faible.
+
+
 
 
 
