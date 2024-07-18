@@ -5,7 +5,7 @@ output:
 date: "2024-07-16"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, cache=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = getwd())
 ```
@@ -37,7 +37,7 @@ Nous allons étudier la perte d'information de données perturbées par une Cell
 
 ## Données utilisées
 
-Pour faire notre analyse, nous avons à notre disposition des données Pôle Emploie original regroupant 5 tableaux ayant chacun des spécificités différentes comme la catégorie, le quartier prioritaire, le sexe, la catégorie d'age, le niveau de formation, dur et si l'individu est au RSA. Une premiere présentation de ces données peut être faite comme suit:  
+Pour faire notre analyse, nous avons à notre disposition des données Pôle Emploi regroupant 5 tableaux ayant chacun des spécificités différentes comme la catégorie, le quartier prioritaire, le sexe, la catégorie d'âge, le niveau de formation, du et si l'individu est au RSA. Une première présentation de ces données peut être faite comme suit :
 
 ```{r liste_tableaux, cache=FALSE}
 str(liste_tableaux)
@@ -46,7 +46,7 @@ str(liste_tableaux)
 
 ## Méthodes de perturbations des données
 
-Nous allons ensuite appliquer la CKM et l'arrondi aleatoire à nos tableaux affin de pouvoir comparer les deux méthodes perturbatrices. Par esemple pour notre premier tableau contenant données originales et perturbées est présenté ici : 
+Nous allons ensuite appliquer la CKM et l'arrondi aleatoire à nos tableaux afin de pouvoir comparer les deux méthodes perturbatrices. Nous choisissons un arrondi aléatoire en base 10 et un variance de 6.25 et déviation de 10 pour la CKM. Par exemple notre premier tableau ,contenant données originales et perturbées, est présenté ici : 
 
 ```{r tableau_perturbe, echo=FALSE}
 tableau_perturbe <- appliquer_ckm(tableau_1, D, V)
@@ -57,7 +57,7 @@ str(tableau_perturbe)
 
 Après avoir appliquer les méthodes, notre objectif est de mesurer de différentes manières les conséquences de ces méthodes sur l'utilité des données, en comparant diverses métriques et analyses statistiques avant et après l'application de ces méthodes.
 
-Pour cela, nous disposons d'une fonction qui ,pour chaque sous tableaux et chaque méthodes, va renvoyer le nombre de cellules du tableaux, le nombre de cellules inférieur à 10, les distances moyennes par cellules, distance de Hellinger et distance relatives absolues. Nous avons aussi à notre dispositions les test de Spearman et Wilcoxon, le taux de variation de variance et le V de cramer et statistiques associées.  
+Pour cela, nous disposons d'une fonction qui, pour chaque sous-tableau et chaque méthode, va renvoyer le nombre de cellules du tableau, le nombre de cellules inférieures à 10, les distances moyennes par cellule, la distance de Hellinger et les distances relatives absolues. Nous avons également à notre disposition les tests de Spearman et Wilcoxon, le taux de variation de la variance ainsi que le V de Cramer et les statistiques associées.
 
 ```{r resultats, eval=FALSE}
 resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cat, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
@@ -65,7 +65,7 @@ statistiques <- resultats$statistiques
 
 ```
 
-Pour visualiser les conséquences de ces méthodes sur l'utilité des données, nous réalisons également des Analyse factorielle des correspondances (AFC) et des graphiques représentant la distance en fonction du nombre de cellules du tableau.
+Pour visualiser les conséquences de ces méthodes sur l'utilité des données, nous réalisons également des Analyses factorielles des correspondances (AFC) et des graphiques représentant la distance en fonction du nombre de cellules du tableau.
 
 
 ```{r visualisations, eval=FALSE}
@@ -95,13 +95,13 @@ Dans cette section, nous allons nous interresser aux distances entre les cellule
 
 Soit \(D_k\) représentant un tableau pour l'observation \(k\) et \(D_k(c)\) la fréquence de la cellule \(c\) dans le tableau. Soit \(|OA|\) le nombre total de cellules. Les métriques de distance sont :
 
-#### Distance de Hellinger
+##### Distance de Hellinger
 
 \[ 
 HD(D_{\text{orig}}, D_{\text{pert}}) = \frac{1}{|OA|} \sum_{k=1}^{|OA|} \sqrt{ \frac{1}{2} \left( \sqrt{D_{k,\text{pert}}(c)} - \sqrt{D_{k,\text{orig}}(c)} \right)^2 }
 \]
 
-#### Distance Absolue Moyenne par Cellule
+##### Distance Absolue Moyenne par Cellule
 
 \[ 
 AAD(D_{\text{orig}}, D_{\text{pert}}) = \frac{1}{|OA|} \sum_{k=1}^{|OA|} \left| D_{k,\text{pert}}(c) - D_{k,\text{orig}}(c) \right|
@@ -109,7 +109,7 @@ AAD(D_{\text{orig}}, D_{\text{pert}}) = \frac{1}{|OA|} \sum_{k=1}^{|OA|} \left| 
 
 
 La distance HD est basée sur la théorie de l'information. Elle est fortement influencé par les petites cellules.
-L'AAD est plus intuitif et décrit la différence absolue moyenne par cellule non nulle d'une OA
+L'AAD est plus intuitif et décrit la différence absolue moyenne par cellule.
 Les tableaux suivant présente les résultats des mesures d'utilité pour les différentes méthodes SDC.
 
 Pour la distance moyenne par cellule, on a :
@@ -131,6 +131,8 @@ ggplot(all_statistiques) +
 
 
 ```
+On constante que la distance moyenne par cellule ne depasse pas 2.5 pour la CKM qui a une déviation de 10 et est aux moins deux fois moins élevée que celle pour l'arrondi aléatoire allant jusqu'à 5. Pour la CKM, les valeurs des cellules perturbées sont donc très proches des valeurs originales. La méthode  conserve bien les valeurs des cellules, ce qui est important pour maintenir l'utilité des données pour des analyses précises.
+
 
 Pour la distance de Hellinger on a : 
 ```{r, echo=FALSE}
@@ -142,6 +144,7 @@ Que l'on peut representer :
 
 ```{r, echo=FALSE}
 ggplot(all_statistiques) +
+  scale_y_log10() +
   geom_point(aes(x = Taille, y = HD_ckm, color = 'HD_ckm')) +
   geom_point(aes(x = Taille, y = HD_alea, color = 'HD_alea')) +
   labs(title = "Distance en fonction du nombre de cellules",
@@ -150,9 +153,52 @@ ggplot(all_statistiques) +
        color = "Légende") +
   theme_bw()
 ```
+D'apres le tableau et le graphique, on remarque que les distances de Hellinger sont proches de 0 pour la CKM. Les distributions des données originales et perturbées sont donc très similaires, ce qui signifie que les propriétés statistiques globales des données sont bien conservées. Par conséquent, l'utilité des données pour des analyses basées sur des distributions reste élevée. De plus, la distance de Hellinger est deux fois moins élevée pour la méthode CKM comparée à l'arrondi aléatoire, soulignant ainsi la meilleure conservation des distributions par la méthode CKM.
+
+
 
 ### Impact sur les mesures d'association
-Vcramer + graphique Vcramer 
+
+#### La statistique du V de Cramer 
+
+Une autre analyse statistique fréquemment réalisée sur les tableaux de contingence est le test d'indépendance entre les variables catégorielles qui composent le tableau. Le test d'indépendance pour un tableau à deux entrées est basé sur une statistique du Chi-deux de Pearson :
+
+\[ 
+\chi^2 = \sum_i \sum_j \frac{(o_{ij} - e_{ij})^2}{e_{ij}}
+\]
+
+où \(o_{ij}\) est le nombre observé et \(e_{ij} = \frac{n_{i.} \times n_{.j}}{n}\) est le nombre attendu pour la ligne \(i\) et la colonne \(j\). Si les lignes et les colonnes sont indépendantes, alors \(\chi^2\) suit asymptotiquement une distribution du chi-deux avec \((R-1)(C-1)\) degrés de liberté. Pour des valeurs élevées, le test rejette l'hypothèse nulle en faveur de l'hypothèse alternative d'association.
+
+Nous utilisons la mesure d'association, V de Cramer :
+
+\[ 
+CV = \sqrt{\frac{\chi^2}{n \cdot \text{min}(R-1, C-1)}}
+\]
+
+et définissons la perte d'information par la différence relative en pourcentage entre le tableau original et le tableau perturbé :
+
+\[ 
+RCV(D_{\text{orig}}, D_{\text{pert}}) = 100 \times \frac{CV(D_{\text{pert}}) - CV(D_{\text{orig}})}{CV(D_{\text{orig}})}
+\]
+
+Le tableau suivant présente les mesures de perte d'information \(RCV\) pour nos données Pôle emploie :
+
+```{r, echo=FALSE}
+ DT ::datatable(all_statistiques %>%drop_na() %>% select(Tableau,Taille, Taux_Variation_V_Cramer_ckm,Taux_Variation_V_Cramer_alea ))%>%formatRound(columns = c('Taux_Variation_V_Cramer_ckm', 'Taux_Variation_V_Cramer_alea'), digits = 4)
+```
+
+D'une part, la CKM indiquent que les tableaux ayant un petit nombre de cellules subissent une légère perte association contrairement à l'arrondi aléatoire qui subie une légère hausse d'association.
+
+D'autre part, les deux méthodes indiquent que les tableaux perturbés ont artificiellement plus d'associations que le tableau d'origine si le tableau comporte beaucoup de cellules et d'autant plus dans le cas de l'arrondi aléatoire. Les tableaux contenant la variable PLGQP sont particulièrement affecté . 
+
+
+A noter que ce résultat est independant du nombre de cellules inférieure à 10 dans les tableaux.
+
+#### L'Analyse factorielle des correspondances (AFC) 
+
+L’analyse factorielle des correspondances (AFC) est une méthode exploratoire d’analyse des tableaux de contingence. L’AFC est considérée comme une ACP particulière dotée de la métrique du \(\chi^2\) qui ne dépend que du profil des colonnes du tableau. L’analyse permet, dans le plan des deux premiers axes factoriels, une représentation simultanée des ressemblances entre les colonnes ou les lignes du tableau et de la proximité entre lignes et colonnes.
+
+
 
 
 
@@ -168,21 +214,21 @@ Une valeur de rho proche de 1 indique une forte corrélation. Cela signifie que 
 
 Si la valeur p est supérieure à 0.05, on ne peut pas rejeter l'hypothèse nulle. Cela signifie qu'il n'y a pas de preuve statistiquement significative de corrélation entre les deux ensembles de données. alors que Si la valeur p est inférieure ou égale à 0.05, on rejette l'hypothèse nulle. Cela signifie qu'il y a une preuve statistiquement significative de corrélation entre les deux ensembles de données.
 
-Dans notre cas, les valeur rho sont toujours très proche de 1 peu importe la méthode et la valeur de p inférieur à 0.05.On remarque que la ckm est toujours meilleurs que l'arrondi aléatoire si on compare leurs valeurs de rho.
+Dans le cas de petit tableau (nb de cellules<5) et pour les deux méthodes, la p valeur est supérieur à 0.05 et donc on en conclue qu'il n'y a pas de prevue significative de corrélation entre les deux ensembles de données (originale et perturbéé)
+
+Sinon, les valeur rho sont toujours très proche de 1 peu importe la méthode et la valeur de p inférieur à 0.05. On remarque que la ckm est toujours meilleurs que l'arrondi aléatoire si on compare leurs valeurs de rho.
 
 #### Test de Wilcoxon
 
 Nous pouvons aussi utiliser un test de classement signé de Wilcoxen pour vérifier si l'emplacement de la distribution empirique a changé. L'hypothèse nulle du test est la suivante : aucun changement. La statistique standardisée est basée sur le classement des cellules dans le tableau et tester si la somme des scores de classement pour les cellules d'origine dévie de la moyenne attendue sous l’hypothèse nulle d’égalité de localisation. S'il y a un grand écart (petite valeur p), alors on peut dire que l'emplacement de la distribution a été décalé. Le tableau suivant présente les valeurs p pour le test de classement signé de Wilcoxon.
 
 ```{r, echo=FALSE}
-DT ::datatable(all_statistiques %>% select(Tableau,Taille,p_value_Wilcoxon_ckm, p_value_Wilcoxon_alea))%>%formatRound(columns = c('p_value_Wilcoxon_ckm', 'p_value_Wilcoxon_alea'), digits = 3)
+DT ::datatable(all_statistiques %>% select(Tableau,Taille,Nb_obs_inf_10,Nb_obs_inf_10_ckm,Nb_obs_inf_10_alea,p_value_Wilcoxon_ckm, p_value_Wilcoxon_alea))%>%formatRound(columns = c('p_value_Wilcoxon_ckm', 'p_value_Wilcoxon_alea'), digits = 3)
 ```
 
-Le tenesure tableau montre des valeurs p significatives et nous rejetons l'hypothèse nulle du
-même emplacement. Le tableau étant plus uniforme, il apparaît que les méthodes SDC ont un
-impact plus important sur la distribution des comptes cellulaires. Les autres tableaux ne sont pas
-significatifs, à l'exception de la suppression des cellules avec moyennes simples imputées sur le
-tableau de l'emploie.
+La table montre que les perturbations ont modifié la distribution des données sur les tableaux comportant un très grand nombre de cellules (>100 000) et un grand nombre de petites cellules (>40 000). Ce phénomène est particulièrement prononcé dans le cas de la méthode CKM, qui présente des p-values inférieures à 0,05 et plus basses que celles de l'arrondi aléatoire, indiquant ainsi une perturbation plus importante de la distribution des données.
+
+Les autres tableaux ont une p valeur supérieur à 0.05 et on en conclut que les perturbations n'ont pas modifié significativement la distribution des données. De plus, les p-value de la CKM sont plus élevée que celle de l'arrondi aléatoire. Cela suggére que les perturbations effectuées par la CKM sont meilleures en termes de conservation d'utilité.
 
 ### Impact sur la variance des estimations
 
@@ -190,18 +236,6 @@ Les méthodes SDC auront un impact sur les variances calculées pour les estimat
 tableaux de fréquence. Nous examinons la variance du nombre de cellules  avant et après les méthodes SDC en calculant le taux de variation de variance.
 
 ```{r, echo=FALSE}
-DT ::datatable(all_statistiques %>% select(Tableau,Taille,Taux_Variation_Variance_ckm, Taux_Variation_Variance_alea)) %>% formatRound(columns = c('Taux_Variation_Variance_ckm', 'Taux_Variation_Variance_alea'), digits = 6)
+DT ::datatable(all_statistiques %>% select(Tableau,Taille,Taux_Variation_Variance_ckm, Taux_Variation_Variance_alea)) %>% formatRound(columns = c('Taux_Variation_Variance_ckm', 'Taux_Variation_Variance_alea'), digits = 4)
 ```
-Pour tous les tableaux, la suppression de cellules avec des moyennes simples imputées (SA) et des
-moyennes pondérées (S-WA) entraîne une variance globale plus faible par rapport aux tableaux
-d'origine. Cela indique que ces méthodes SDC, en particulier la méthode SA, produisent des décomptes
-cellulaires plus uniformes. Les méthodes stochastiques d'arrondi (SCA et RaRo) ont peu d'impact sur le
-nombre de cellules des tableaux sur la durée d'occupation et l'emploi. Le tableau d’origine ethnique, qui
-comporte une grande colonne et de très nombreuses colonnes clairsemées, comporte de petites
-cellules plus uniformes basées sur des procédures d’arrondi complet (RaRo et CR(3)), ce qui permet
-d’obtenir une variance globale plus faible.
-
-
-
-
-
+Pour tous les tableaux, on remarque le taux de variation de variance est très faible pour les deux méthodes et que la CKM a toujours un taux de variation plus faible et donc conserve mieux la dispersion des données. L'arrondi aleatoire qui a des taux de variation négatif produit des comptes cellulaires plus uniformes.

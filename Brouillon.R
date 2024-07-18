@@ -62,3 +62,32 @@ Spearman_arrondi_aleatoire <- bind_rows(lapply(seq_along(simuler_arrondi_aleatoi
 
 Spearman_arrondi_aleatoire %>%
   summarize(mean(S),mean(rho),mean(p_value))
+
+
+all_statistiques_long <- all_statistiques %>%drop_na() %>% select(Tableau,Taille,V_Cramer_orig, V_Cramer_ckm, V_Cramer_alea ) %>%
+  pivot_longer(cols = c(V_Cramer_orig, V_Cramer_ckm, V_Cramer_alea), names_to = "Type", values_to = "Value")
+
+ggplot(all_statistiques_long, aes(x = Type, y = Value, fill = Type)) +
+  geom_boxplot() +
+  scale_y_log10() +
+  labs(title = "Boxplot des V_cramer par type",
+       x = "Type",
+       y = "Valeur V_cramer",
+       fill = "Type") +
+  theme_bw()
+
+quantiles <- all_statistiques_long %>%
+  group_by(Type) %>%
+  summarize(quantile = seq(0, 1, 0.01), 
+            value = quantile(Value, probs = seq(0, 1, 0.01)))
+
+ggplot(quantiles, aes(x = quantile * 100, y = value, color = Type)) +
+  geom_line(size = 1) +
+  scale_y_log10() +
+  labs(title = "Tracé des Centiles pour V_Cramer par type",
+       x = "Centile",
+       y = "Valeur V_Cramer",
+       color = "Type") +
+  theme_bw() +
+  theme(panel.grid.major = element_line(color = "grey90"),
+        panel.grid.minor = element_line(color = "grey95"))

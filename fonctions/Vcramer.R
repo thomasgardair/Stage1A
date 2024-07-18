@@ -64,7 +64,7 @@ Taux_Variation_Vcramer <- function(table_orig, table_pert) {
   vcramer_original <- Vcramer(table_orig)
   vcramer_perturbe <- Vcramer(table_pert)
     
-  vcramer_diff <- (abs(vcramer_original - vcramer_perturbe)/vcramer_original)*100
+  vcramer_diff <- ((vcramer_perturbe - vcramer_original)/vcramer_original)*100
   
   return(list(khi_deux_orig = test_orig$statistic, khi_deux_pert = test_pert$statistic,
               p_value_orig = test_orig$p.value, p_value_pert = test_pert$p.value, 
