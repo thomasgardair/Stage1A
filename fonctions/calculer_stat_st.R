@@ -28,6 +28,10 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
   liste_distances_AAD <-list()
   liste_distances_HD <-list()
   liste_distances_RAD <-list()
+  list_tab_orig <- list()
+  list_tab_pert_ckm <- list()
+  list_tab_pert_alea <- list()
+  
   
   for (l in 1:length(sous_tableaux)) {
     for (name in names(sous_tableaux[[l]])) {
@@ -57,6 +61,10 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
         tab_orig <- from_df_to_contingence(sous_tableau, vars_num1, vars_num2, vars_num3)
         tab_pert_ckm <- from_df_to_contingence(sous_tableau, vars_num2, vars_num1, vars_num3)
         tab_pert_alea <- from_df_to_contingence(sous_tableau, vars_num3, vars_num2, vars_num1)
+        
+        list_tab_orig[[name]] <- tab_orig
+        list_tab_pert_ckm[[name]] <- tab_pert_ckm
+        list_tab_pert_alea[[name]] <- tab_pert_alea
         
         taux_v_cramer_ckm <- Taux_Variation_Vcramer(tab_orig, tab_pert_ckm)
         taux_v_cramer_alea <- Taux_Variation_Vcramer(tab_orig, tab_pert_alea)
@@ -140,6 +148,7 @@ calculer_statistiques_sous_tableaux <- function(tableau, vars_cat, vars_num1 = "
   
   plot_distances <- list(plot_distances_AAD = plot_distances_AAD, plot_distances_HD = plot_distances_HD, plot_distances_RAD = plot_distances_RAD)
   
-  return(list(statistiques = liste_resultats, afc = liste_afc, plot_distances = plot_distances))
+  return(list(statistiques = liste_resultats, afc = liste_afc, plot_distances = plot_distances, 
+              tab_orig = list_tab_orig, tab_pert_ckm = list_tab_pert_ckm, tab_pert_alea = list_tab_pert_alea))
 }
 

@@ -72,9 +72,28 @@ tableau_5 <- tableau_5 %>% select(-rkeys_max,-ck)%>%rename(PLGQP = PLG_QP)
 tableau_perturbe <- appliquer_ckm(tableau_1, D, V)
 str(tableau_perturbe)
 
-
 # 3- Appliquer AL
 tableau_perturbe <- appliquer_arrondi_aleatoire(tableau_perturbe, B)
+str(tableau_perturbe)
+
+
+tableau_perturbe_2 <- appliquer_ckm(tableau_2, D, V)
+tableau_perturbe_2 <- appliquer_arrondi_aleatoire(tableau_perturbe_2, B)
+
+
+tableau_perturbe_3 <- appliquer_ckm(tableau_3, D, V)
+str(tableau_perturbe)
+tableau_perturbe_3 <- appliquer_arrondi_aleatoire(tableau_perturbe_3, B)
+
+
+tableau_perturbe_4 <- appliquer_ckm(tableau_4, D, V)
+str(tableau_perturbe)
+tableau_perturbe_4 <- appliquer_arrondi_aleatoire(tableau_perturbe_4, B)
+str(tableau_perturbe)
+
+tableau_perturbe_5 <- appliquer_ckm(tableau_5, D, V)
+str(tableau_perturbe)
+tableau_perturbe_5 <- appliquer_arrondi_aleatoire(tableau_perturbe_5, B)
 str(tableau_perturbe)
 
 
@@ -87,9 +106,12 @@ resultats <- calculer_statistiques_sous_tableaux(tableau_perturbe, vars_cats, "n
 statistiques <- resultats$statistiques
 plot_afc <- resultats$afc
 plot_distances <- resultats$plot_distances
-
-
-
+vars_cats_2 = c("CATEG","PLGQP","AGE3c","SEXE")
+resultats_2 <- calculer_statistiques_sous_tableaux(tableau_perturbe_2, vars_cats_2, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
+vars_cats_4 = c("CATEG","PLGQP",'DUR',"SEXE")
+resultats_4 <- calculer_statistiques_sous_tableaux(tableau_perturbe_4, vars_cats_4, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
+vars_cats_5 = c("CATEG","PLGQP","RSA")
+resultats_5 <- calculer_statistiques_sous_tableaux(tableau_perturbe_5, vars_cats_5, "nb_obs", "nb_obs_ckm", "nb_obs_alea", "Ensemble")
 
 # Lancer le calcul des stats sur tous les tableaux
 
