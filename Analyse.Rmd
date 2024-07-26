@@ -200,6 +200,12 @@ Le tableau suivant présente les mesures de perte d'information \(RCV\) pour nos
 ```{r, echo=FALSE}
  DT ::datatable(all_statistiques %>%drop_na() %>% select(Tableau,Taille, Taux_Variation_V_Cramer_ckm,Taux_Variation_V_Cramer_alea ))%>%formatRound(columns = c('Taux_Variation_V_Cramer_ckm', 'Taux_Variation_V_Cramer_alea'), digits = 4)
 ```
+```{r}
+all_statistiques %>%
+  drop_na() %>%
+  select(Tableau,Taille, Taux_Variation_V_Cramer_ckm,Taux_Variation_V_Cramer_alea )%>%
+  knitr::kable(format="latex", digits = 4)
+```
 
 D'une part, la CKM indiquent que les tableaux ayant un petit nombre de cellules subissent une légère perte d'association contrairement à l'arrondi aléatoire qui subie une légère hausse d'association.
 
@@ -302,6 +308,14 @@ Un autre outil d'inférence statistique est la corrélation de rang de Spearman.
 ```{r, echo=FALSE}
 DT::datatable(all_statistiques %>% select(Tableau,Taille, rho_Spearman_ckm, rho_Spearman_alea,p_value_Spearman_ckm, p_value_Spearman_alea))%>%formatRound(columns = c('rho_Spearman_ckm', 'rho_Spearman_alea', 'p_value_Spearman_ckm', 'p_value_Spearman_alea'), digits = 3)
 ```
+
+```{r}
+all_statistiques %>% select(Tableau,Taille, rho_Spearman_ckm, rho_Spearman_alea) %>% 
+  arrange(desc(rho_Spearman_ckm)) %>% 
+  slice(1:10) %>% 
+  knitr::kable(format="latex", digits = 3, booktabs=TRUE, caption= "Test de Spearman")
+```
+
 Une valeur de rho proche de 1 indique une forte corrélation. Cela signifie que les rangs des données originales et perturbées sont fortement liés. Alors qu'Une valeur de rho proche de 0 indique une faible corrélation, ce qui suggère que la perturbation a modifié la structure des rangs des données.
 
 Si la valeur p est supérieure à 0.05, on ne peut pas rejeter l'hypothèse nulle. Cela signifie qu'il n'y a pas de preuve statistiquement significative de corrélation entre les deux ensembles de données. alors que Si la valeur p est inférieure ou égale à 0.05, on rejette l'hypothèse nulle. Cela signifie qu'il y a une preuve statistiquement significative de corrélation entre les deux ensembles de données.
@@ -318,6 +332,14 @@ Nous pouvons aussi utiliser un test de classement signé de Wilcoxen pour vérif
 ```{r, echo=FALSE}
 DT ::datatable(all_statistiques %>% select(Tableau,Taille,p_value_Wilcoxon_ckm, p_value_Wilcoxon_alea))%>%formatRound(columns = c('p_value_Wilcoxon_ckm', 'p_value_Wilcoxon_alea'), digits = 3)
 ```
+
+```{r}
+all_statistiques %>% select(Tableau,Taille,p_value_Wilcoxon_ckm, p_value_Wilcoxon_alea) %>% 
+  arrange(p_value_Wilcoxon_ckm) %>% 
+  slice(1:10) %>% 
+  knitr::kable(format="latex", digits = 3, booktabs=TRUE, caption= "Test de Wilcoxon")
+```
+
 
 La table montre que les perturbations ont modifié la distribution des données sur les tableaux comportant un très grand nombre de cellules (>100 000) et un grand nombre de petites cellules (>40 000). Ce phénomène est particulièrement prononcé dans le cas de la méthode CKM, qui présente des p-values inférieures à 0,05 et plus basses que celles de l'arrondi aléatoire, indiquant ainsi une perturbation plus importante de la distribution des données.
 
